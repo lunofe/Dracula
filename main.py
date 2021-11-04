@@ -265,9 +265,9 @@ async def claim(ctx,
 
         await ctx.respond("Firing up the engines!")
 
-        for filename in os.listdir("/home/ashnexttv/claims"):
+        for filename in os.listdir("/home/cli/dracula/claims"):
             if filename.endswith(".yml"):
-                file = open("/home/ashnexttv/claims/"+filename, "r")
+                file = open("/home/cli/dracula/claims"+filename, "r")
                 content = yaml.safe_load(file.read())
                 file.close()
                 content["id"] = filename.split(".")[0]
@@ -323,7 +323,7 @@ async def updateclaims(ctx):
         bot_msg = await ctx.send("Firing up the engines!")
 
         try:
-            os.system("rm /home/ashnexttv/claims/* -r")
+            os.system("rm /home/cli/dracula/claims/* -r")
         except:
             pass
 
@@ -336,7 +336,7 @@ async def updateclaims(ctx):
 
         i=0
         for file in files:
-            ftp.retrbinary("RETR " + file, open("/home/ashnexttv/claims/" + file, "wb").write)
+            ftp.retrbinary("RETR " + file, open("/home/cli/dracula/claims/" + file, "wb").write)
             i+=1
             percent = str(i/len(files)*100).split(".")[0]
             if str(i).endswith("00") or str(i).endswith("25") or str(i).endswith("50") or str(i).endswith("75"):
