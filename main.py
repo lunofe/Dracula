@@ -10,6 +10,10 @@ from imap_tools import MailBox
 
 # Init
 bot = discord.Bot(intents=discord.Intents.all())
+servers = [
+    528346798138589215, # Vampirism.co
+    692526341987369021 # Dev
+]
 
 # Presence
 @bot.event
@@ -22,7 +26,7 @@ async def on_ready():
 
 
 # Ping
-@bot.slash_command(guild_ids=[692526341987369021, 528346798138589215])
+@bot.slash_command(guild_ids=servers)
 async def ping(ctx):
     """Test bot functionality"""
     embed=discord.Embed(title="Dracula")
@@ -33,7 +37,7 @@ async def ping(ctx):
     await ctx.respond(embed=embed)
 
 # Connection issues (cracked?)
-@bot.slash_command(guild_ids=[692526341987369021, 528346798138589215])
+@bot.slash_command(guild_ids=servers)
 async def connection(ctx):
     """For connections issues and errors like \"Failed to verify username\""""
     if "Staff" in str(ctx.author.roles):
@@ -46,7 +50,7 @@ async def connection(ctx):
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
 
 # Ticket close
-@bot.slash_command(guild_ids=[692526341987369021, 528346798138589215])
+@bot.slash_command(guild_ids=servers)
 async def close(ctx,
     user: Option(str, "@Tag the user, then press TAB"),
     mode: Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Regular", "Stale"])
@@ -63,7 +67,7 @@ async def close(ctx,
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
 
 # Delete
-@bot.slash_command(guild_ids=[692526341987369021, 528346798138589215])
+@bot.slash_command(guild_ids=servers)
 async def delete(ctx,
     latest: Option(str, "The ID of the latest message to delete"),
     oldest: Option(str, "The ID of the oldest message to delete")
@@ -85,7 +89,7 @@ async def delete(ctx,
         await ctx.respond(f":warning: {e}", ephemeral=True)
 
 # Embeds
-@bot.slash_command(guild_ids=[692526341987369021, 528346798138589215])
+@bot.slash_command(guild_ids=servers)
 async def embed(ctx,
     id: Option(str, "Select an embed to send", choices=["welcome", "rules", "roles", "support"])
 ):
@@ -132,7 +136,7 @@ async def embed(ctx,
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
 
 # Forms
-@bot.slash_command(guild_ids=[692526341987369021, 528346798138589215])
+@bot.slash_command(guild_ids=servers)
 async def forms(ctx,
     type: Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Staff Application", "Ban Appeal"]),
     action: Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Accept", "Reject"]),
@@ -164,7 +168,7 @@ async def forms(ctx,
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
 
 # Restart
-@bot.slash_command(guild_ids=[692526341987369021, 528346798138589215])
+@bot.slash_command(guild_ids=servers)
 async def restart(ctx):
     """Restarts the server"""
     try:
@@ -204,7 +208,7 @@ async def restart(ctx):
             await ctx.channel.send(f":warning: {e}")
 
 # Claims
-@bot.slash_command(guild_ids=[692526341987369021, 528346798138589215])
+@bot.slash_command(guild_ids=servers)
 async def claim(ctx,
     x: Option(int, "X coordinate of a block in the claim"),
     z: Option(int, "Z coordinate of a block in the claim")
@@ -267,7 +271,7 @@ async def claim(ctx,
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
 
 # Update claims
-@bot.slash_command(guild_ids=[692526341987369021, 528346798138589215])
+@bot.slash_command(guild_ids=servers)
 async def updateclaims(ctx):
     """Update the local database of claims"""
     if "Staff" in str(ctx.author.roles):
@@ -302,7 +306,7 @@ async def updateclaims(ctx):
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
 
 # Get new emails via imap and send the content to the staff channel
-@bot.slash_command(guild_ids=[692526341987369021, 528346798138589215])
+@bot.slash_command(guild_ids=servers)
 async def updatemails(ctx):
     """Check for new staff applications and ban appeals"""
     if "Staff" in str(ctx.author.roles):
