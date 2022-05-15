@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import config, discord, os, time, requests, yaml
-from discord.commands import Option
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
@@ -53,7 +52,7 @@ async def connection(ctx):
 # Ticket close
 @bot.slash_command(guild_ids=servers)
 async def reject(ctx,
-    reason: Option(str, "Reason for rejection")
+    reason: discord.Option(str, "Reason for rejection")
 ):
     """Reject a suggestion"""
     if "Staff" not in str(ctx.author.roles):
@@ -79,8 +78,8 @@ async def reject(ctx,
 # Ticket close
 @bot.slash_command(guild_ids=servers)
 async def close(ctx,
-    user: Option(str, "@Tag the user, then press TAB"),
-    mode: Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Regular", "Stale"])
+    user: discord.Option(str, "@Tag the user, then press TAB"),
+    mode: discord.Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Regular", "Stale"])
 ):
     """Ask if the ticket can be closed"""
     if "Staff" not in str(ctx.author.roles):
@@ -97,8 +96,8 @@ async def close(ctx,
 # Delete
 @bot.slash_command(guild_ids=servers)
 async def delete(ctx,
-    latest: Option(str, "The ID of the latest message to delete"),
-    oldest: Option(str, "The ID of the oldest message to delete")
+    latest: discord.Option(str, "The ID of the latest message to delete"),
+    oldest: discord.Option(str, "The ID of the oldest message to delete")
 ):
     """Delete all messages between two given IDs"""
     if "Staff" not in str(ctx.author.roles):
@@ -120,7 +119,7 @@ async def delete(ctx,
 # Embeds
 @bot.slash_command(guild_ids=servers)
 async def embed(ctx,
-    id: Option(str, "Select an embed to send", choices=["welcome", "rules", "roles", "support", "suggestions"])
+    id: discord.Option(str, "Select an embed to send", choices=["welcome", "rules", "roles", "support", "suggestions"])
 ):
     """Send embeds"""
     if "Staff" not in str(ctx.author.roles):
@@ -175,9 +174,9 @@ async def embed(ctx,
 # Forms
 @bot.slash_command(guild_ids=servers)
 async def forms(ctx,
-    type: Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Staff Application", "Ban Appeal"]),
-    action: Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Accept", "Reject"]),
-    user: Option(str, "@Tag the user, write their ID or full name (with #discriminator), then press TAB")
+    type: discord.Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Staff Application", "Ban Appeal"]),
+    action: discord.Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Accept", "Reject"]),
+    user: discord.Option(str, "@Tag the user, write their ID or full name (with #discriminator), then press TAB")
 ):
     """Send automated answers"""
     if "Staff" not in str(ctx.author.roles):
@@ -246,8 +245,8 @@ async def restart(ctx):
 # Claims
 @bot.slash_command(guild_ids=servers)
 async def claim(ctx,
-    x: Option(int, "X coordinate of a block in the claim"),
-    z: Option(int, "Z coordinate of a block in the claim")
+    x: discord.Option(int, "X coordinate of a block in the claim"),
+    z: discord.Option(int, "Z coordinate of a block in the claim")
 ):
     """Find out which claim was created first"""
     if "Staff" not in str(ctx.author.roles):
