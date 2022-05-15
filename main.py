@@ -319,6 +319,8 @@ async def updateclaims(ctx):
     except:
         pass
 
+    await ctx.respond("Hang on for a few minutes!")
+
     ftp = FTP(config.FTP_HOST)
     ftp.login(config.FTP_NAME, config.FTP_PASS)
     status = await ctx.channel.send("Connection established...")
