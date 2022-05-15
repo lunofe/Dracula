@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import config, discord, os, time, requests, yaml
+import config, discord, os, time, requests, yaml, pycountry
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
@@ -380,16 +380,15 @@ async def updatemails(ctx):
 
         # Staff application
         if len(content) == 11:
-            embed=discord.Embed(title=content[0], description=f"{content[1]} years old, {content[2]}")
-            embed.add_field(name="Minecraft username", value=f"`{content[3]}`", inline=True)
-            embed.add_field(name="Discord#Tag", value=f"`{content[4]}`", inline=True)
-            embed.add_field(name="E-mail", value=f"`{content[5]}`", inline=True)
-            embed.add_field(name="Do you have experience as staff?", value=content[6], inline=False)
-            embed.add_field(name="Why do you want to be staff?", value=content[7], inline=False)
-            embed.add_field(name="Why should you be chosen instead of someone else?", value=content[8], inline=False)
-            embed.add_field(name="Do you have any issues with the current staff team?", value=content[9], inline=False)
-            embed.add_field(name="How many hours per week can you contribute?", value=content[10], inline=False)
-            content_length = len(content[6].split()) + len(content[7].split()) + len(content[8].split())
+            embed=discord.Embed(title=content[0], description=f"{content[1]} years old, {content[2]}\n:flag_{content[3].lower()}: {pycountry.countries.get(alpha_2=content[3]).name}")
+            embed.add_field(name="Minecraft Username", value=f"`{content[4]}`", inline=True)
+            embed.add_field(name="Discord#Tag", value=f"`{content[5]}`", inline=True)
+            embed.add_field(name="Email", value=f"`{content[6]}`", inline=True)
+            embed.add_field(name="Do you have experience as staff?", value=content[7], inline=False)
+            embed.add_field(name="Why do you want to be staff?", value=content[8], inline=False)
+            embed.add_field(name="Why should you be chosen instead of someone else?", value=content[9], inline=False)
+            embed.add_field(name="How many hours could you approximately contribute per week?", value=content[10], inline=False)
+            content_length = len(content[7].split()) + len(content[8].split()) + len(content[9].split())
             embed.set_footer(text=f"{content_length} words")
             if content_length > 50:
                 msg = await channel.send(content="**STAFF APPLICATION** @staff", embed=embed)
@@ -400,21 +399,28 @@ async def updatemails(ctx):
             await msg.create_thread(name=f"{content[0]}\'s Staff Application")
 
         # Ban appeal
-        elif len(content) == 4:
-            embed=discord.Embed(title="Ban Appeal")
-            embed.add_field(name="Minecraft username", value=f"`{content[0]}`", inline=True)
-            embed.add_field(name="Contact", value=f"`{content[1]}`", inline=True)
-            embed.add_field(name="More about your ban", value=content[2], inline=False)
-            embed.add_field(name="Why should you be unbanned?", value=content[3], inline=False)
-            content_length = len(content[2].split()) + len(content[3].split())
-            embed.set_footer(text="{} words".format(content_length))
+        elif len(content) == 7:
+            if content[0] == "mc":
+                embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft\nType: {content[1]}")
+            elif content[0] == "dc":
+                embed=discord.Embed(title="Ban Appeal", description=f"Bans: Discord\nType: {content[1]}")
+            else:
+                embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft & Discord\nType: {content[1]}")
+
+            embed.add_field(name="Minecraft Username", value=f"`{content[2]}`", inline=True)
+            embed.add_field(name="Discord#Tag", value=f"`{content[3]}`", inline=True)
+            embed.add_field(name="Email", value=f"`{content[4]}`", inline=True)
+            embed.add_field(name="Why have you been banned?", value=content[5], inline=False)
+            embed.add_field(name="Why should you be unbanned?", value=content[6], inline=False)
+            content_length = len(content[5].split()) + len(content[6].split())
+            embed.set_footer(text=f"{content_length} words")
             if content_length > 50:
                 msg = await channel.send(content="@staff", embed=embed)
             else:
                 msg = await channel.send(embed=embed)
             await msg.add_reaction("<:vote_yes:601899059417972737>")
             await msg.add_reaction("<:vote_no:601898704231989259>")
-            await msg.create_thread(name=f"{content[0]}\'s Ban Appeal")
+            await msg.create_thread(name=f"{content[2]}\'s Ban Appeal")
 
         # Unknown
         else:
