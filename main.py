@@ -49,6 +49,18 @@ async def connection(ctx):
     await ctx.respond(content=":white_check_mark:", ephemeral=True)
     await ctx.channel.send(embed=embed)
 
+# Log upload guide
+@bot.slash_command(guild_ids=servers)
+async def logs(ctx):
+    """A guide to upload logs"""
+    if "Staff" not in str(ctx.author.roles):
+        await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
+        return
+
+    embed=discord.Embed(title="Upload your logs", description="<:curseforge:904463104505688124> [CurseForge](https://vampirism.co/install-curseforge/upload-logs/) <:external_link:904418888551391243>\n<:technic:904463105780752444> [TechnicLauncher](https://vampirism.co/install-technic/upload-logs/) <:external_link:904418888551391243>")
+    await ctx.respond(content=":white_check_mark:", ephemeral=True)
+    await ctx.channel.send(embed=embed)
+
 # Ticket close
 @bot.slash_command(guild_ids=servers)
 async def reject(ctx,
