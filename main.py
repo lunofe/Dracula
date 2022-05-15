@@ -391,7 +391,7 @@ async def updatemails(ctx):
             content_length = len(content[7].split()) + len(content[8].split()) + len(content[9].split())
             embed.set_footer(text=f"{content_length} words")
             if content_length > 50:
-                msg = await channel.send(content="**STAFF APPLICATION** @staff", embed=embed)
+                msg = await channel.send(content="**STAFF APPLICATION** <@844592732001009686>", embed=embed)
             else:
                 msg = await channel.send(content="**STAFF APPLICATION**", embed=embed)
             await msg.add_reaction("<:vote_yes:601899059417972737>")
@@ -415,7 +415,7 @@ async def updatemails(ctx):
             content_length = len(content[5].split()) + len(content[6].split())
             embed.set_footer(text=f"{content_length} words")
             if content_length > 50:
-                msg = await channel.send(content="@staff", embed=embed)
+                msg = await channel.send(content="<@844592732001009686>", embed=embed)
             else:
                 msg = await channel.send(embed=embed)
             await msg.add_reaction("<:vote_yes:601899059417972737>")
