@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import config, discord, os, time, requests, yaml, pycountry
+from discord.ext import tasks
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
@@ -18,6 +19,7 @@ servers = [
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Game(name="vampirism.co"))
+    update_mails_task.start()
     print("Ready!")
 
 
@@ -355,13 +357,7 @@ async def updateclaims(ctx):
     #ftp.close()
 
 # Get new emails via imap and send the content to the staff channel
-@bot.slash_command(guild_ids=servers)
-async def updatemails(ctx):
-    """Check for new staff applications and ban appeals"""
-    if "Staff" not in str(ctx.author.roles):
-        await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
-        return
-
+async def update_mails():
     channel = bot.get_channel(564783779474833431)
     
     # Connect to imap
@@ -431,9 +427,25 @@ async def updatemails(ctx):
         mailbox.delete(mail.uid)
     mailbox.logout()
 
+# Update mails
+@bot.slash_command(guild_ids=servers)
+async def updatemails(ctx):
+    """Check for new staff applications and ban appeals"""
+    if "Staff" not in str(ctx.author.roles):
+        await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
+        return
+
+    await ctx.respond(content=":white_check_mark:", ephemeral=True)
+    await update_mails()
 
 #------------------------------------------------------------------------------#
 
+# Update mails
+@tasks.loop(hours=4)
+async def update_mails_task():
+    await update_mails()
+
+#------------------------------------------------------------------------------#
 
 # Take-off
 bot.run(config.BOT_TOKEN)
