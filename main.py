@@ -414,7 +414,10 @@ async def update_mails():
 
             # Unknown
             else:
-                embed = discord.Embed(title="Unknown email", description=f"I've received an email that doesn't match the layout of any form:\n\n{mail.text}")
+                embed = discord.Embed(title="Unknown email", description=f"I've received an email that doesn't match the layout of any form:")
+                embed.add_field(name="Sender", value=mail.from_, inline=True)
+                embed.add_field(name="Subject", value=mail.subject, inline=True)
+                embed.set_footer(text={mail.text[:2047]})
                 await channel.send(embed=embed)
 
             # Delete the email and log out
