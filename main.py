@@ -340,10 +340,8 @@ async def updateclaims(ctx):
     ftp.cwd("plugins/GriefPreventionData/ClaimData")
     files = ftp.nlst() # Gets all files
 
-    i=0
-    for file in files:
+    for i, file in enumerate(files):
         ftp.retrbinary("RETR " + file, open("/home/cli/dracula/claims/" + file, "wb").write)
-        i+=1
         percent = str(i/len(files)*100).split(".")[0]
         if str(i).endswith("00") or str(i).endswith("25") or str(i).endswith("50") or str(i).endswith("75"):
             try: # Discord timeout might stop loop execution
