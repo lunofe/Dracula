@@ -355,71 +355,70 @@ async def update_mails():
     channel = bot.get_channel(564783779474833431)
     
     # Connect to imap
-    mailbox = MailBox(config.IMAP_HOST).login(config.IMAP_NAME, config.IMAP_PASS, "INBOX")
+    with MailBox(config.IMAP_HOST).login(config.IMAP_NAME, config.IMAP_PASS, "INBOX") as mailbox:
 
-    # Cycle through inbox
-    for mail in mailbox.fetch():
+        # Cycle through inbox
+        for mail in mailbox.fetch():
 
-        # Try to split the email into the form's parts
-        try:
-            content = mail.text.split("§§")
-        except:
-            pass
+            # Try to split the email into the form's parts
+            try:
+                content = mail.text.split("§§")
+            except:
+                pass
 
-        # Switch submission types
+            # Switch submission types
 
-        # Staff application
-        if len(content) == 11:
-            embed=discord.Embed(title=content[0], description=f"{content[1]} years old, {content[2]}\n:flag_{content[3].lower()}: {pycountry.countries.get(alpha_2=content[3]).name}")
-            embed.add_field(name="Minecraft Username", value=f"`{content[4]}`", inline=True)
-            embed.add_field(name="Discord#Tag", value=f"`{content[5]}`", inline=True)
-            embed.add_field(name="Email", value=f"`{content[6]}`", inline=True)
-            embed.add_field(name="Do you have experience as staff?", value=content[7], inline=False)
-            embed.add_field(name="Why do you want to be staff?", value=content[8], inline=False)
-            embed.add_field(name="Why should you be chosen instead of someone else?", value=content[9], inline=False)
-            embed.add_field(name="How many hours could you approximately contribute per week?", value=content[10], inline=False)
-            content_length = len(content[7].split()) + len(content[8].split()) + len(content[9].split())
-            embed.set_footer(text=f"{content_length} words")
-            if content_length > 50:
-                msg = await channel.send(content="**STAFF APPLICATION** <@844592732001009686>", embed=embed)
+            # Staff application
+            if len(content) == 11:
+                embed=discord.Embed(title=content[0], description=f"{content[1]} years old, {content[2]}\n:flag_{content[3].lower()}: {pycountry.countries.get(alpha_2=content[3]).name}")
+                embed.add_field(name="Minecraft Username", value=f"`{content[4]}`", inline=True)
+                embed.add_field(name="Discord#Tag", value=f"`{content[5]}`", inline=True)
+                embed.add_field(name="Email", value=f"`{content[6]}`", inline=True)
+                embed.add_field(name="Do you have experience as staff?", value=content[7], inline=False)
+                embed.add_field(name="Why do you want to be staff?", value=content[8], inline=False)
+                embed.add_field(name="Why should you be chosen instead of someone else?", value=content[9], inline=False)
+                embed.add_field(name="How many hours could you approximately contribute per week?", value=content[10], inline=False)
+                content_length = len(content[7].split()) + len(content[8].split()) + len(content[9].split())
+                embed.set_footer(text=f"{content_length} words")
+                if content_length > 50:
+                    msg = await channel.send(content="**STAFF APPLICATION** <@844592732001009686>", embed=embed)
+                else:
+                    msg = await channel.send(content="**STAFF APPLICATION**", embed=embed)
+                await msg.add_reaction("<:vote_yes:601899059417972737>")
+                await msg.add_reaction("<:vote_no:601898704231989259>")
+                await msg.create_thread(name=f"{content[0]}\'s Staff Application")
+
+            # Ban appeal
+            elif len(content) == 7:
+                if content[0] == "mc":
+                    embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft\nType: {content[1]}")
+                elif content[0] == "dc":
+                    embed=discord.Embed(title="Ban Appeal", description=f"Bans: Discord\nType: {content[1]}")
+                else:
+                    embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft & Discord\nType: {content[1]}")
+
+                embed.add_field(name="Minecraft Username", value=f"`{content[2]}`", inline=True)
+                embed.add_field(name="Discord#Tag", value=f"`{content[3]}`", inline=True)
+                embed.add_field(name="Email", value=f"`{content[4]}`", inline=True)
+                embed.add_field(name="Why have you been banned?", value=content[5], inline=False)
+                embed.add_field(name="Why should you be unbanned?", value=content[6], inline=False)
+                content_length = len(content[5].split()) + len(content[6].split())
+                embed.set_footer(text=f"{content_length} words")
+                if content_length > 50:
+                    msg = await channel.send(content="<@844592732001009686>", embed=embed)
+                else:
+                    msg = await channel.send(embed=embed)
+                await msg.add_reaction("<:vote_yes:601899059417972737>")
+                await msg.add_reaction("<:vote_no:601898704231989259>")
+                await msg.create_thread(name=f"{content[2]}\'s Ban Appeal")
+
+            # Unknown
             else:
-                msg = await channel.send(content="**STAFF APPLICATION**", embed=embed)
-            await msg.add_reaction("<:vote_yes:601899059417972737>")
-            await msg.add_reaction("<:vote_no:601898704231989259>")
-            await msg.create_thread(name=f"{content[0]}\'s Staff Application")
+                embed = discord.Embed(title="Unknown email", description=f"I've received an email that doesn't match the layout of any form:\n\n{mail.text}")
+                await channel.send(embed=embed)
 
-        # Ban appeal
-        elif len(content) == 7:
-            if content[0] == "mc":
-                embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft\nType: {content[1]}")
-            elif content[0] == "dc":
-                embed=discord.Embed(title="Ban Appeal", description=f"Bans: Discord\nType: {content[1]}")
-            else:
-                embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft & Discord\nType: {content[1]}")
-
-            embed.add_field(name="Minecraft Username", value=f"`{content[2]}`", inline=True)
-            embed.add_field(name="Discord#Tag", value=f"`{content[3]}`", inline=True)
-            embed.add_field(name="Email", value=f"`{content[4]}`", inline=True)
-            embed.add_field(name="Why have you been banned?", value=content[5], inline=False)
-            embed.add_field(name="Why should you be unbanned?", value=content[6], inline=False)
-            content_length = len(content[5].split()) + len(content[6].split())
-            embed.set_footer(text=f"{content_length} words")
-            if content_length > 50:
-                msg = await channel.send(content="<@844592732001009686>", embed=embed)
-            else:
-                msg = await channel.send(embed=embed)
-            await msg.add_reaction("<:vote_yes:601899059417972737>")
-            await msg.add_reaction("<:vote_no:601898704231989259>")
-            await msg.create_thread(name=f"{content[2]}\'s Ban Appeal")
-
-        # Unknown
-        else:
-            embed = discord.Embed(title="Unknown email", description=f"I've received an email that doesn't match the layout of any form:\n\n{mail.text}")
-            await channel.send(embed=embed)
-
-        # Delete the email and log out
-        mailbox.delete(mail.uid)
-    mailbox.logout()
+            # Delete the email and log out
+            mailbox.delete(mail.uid)
 
 # Update mails
 @bot.slash_command(guild_ids=servers)
