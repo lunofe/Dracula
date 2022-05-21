@@ -73,8 +73,6 @@ async def reject(ctx,
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
         return
 
-    print(ctx.channel.type)
-
     # Make sure it's a thread
     if ctx.channel.type != discord.ChannelType.public_thread:
         await ctx.respond(":warning: This command can only be used in threads.", ephemeral=True)
