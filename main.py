@@ -272,7 +272,7 @@ async def claim(ctx,
 
     for filename in os.listdir("/home/cli/dracula/claims"):
         if filename.endswith(".yml"):
-            file = open("/home/cli/dracula/claims/"+filename, "r")
+            file = open(f"/home/cli/dracula/claims/{filename}", "r")
             content = yaml.safe_load(file.read())
             file.close()
             content["id"] = filename.split(".")[0]
@@ -309,9 +309,8 @@ async def claim(ctx,
         if (x >= x1) and (x <= x2):
             if (z >= z1) and (z <= z2):
                 result = True
-                owner = requests.get("https://api.mojang.com/user/profiles/{}/names".format(claim["Owner"])).json()
-                owner = owner[len(owner)-1]["name"]
-                await ctx.channel.send("Found a claim in the **{}** owned by **``{}``** with ID **{}**".format(dim, owner, claim["id"]))
+                owner = requests.get(f"https://api.mojang.com/user/profiles/{claim['Owner']}/names").json()
+                await ctx.channel.send(f"Found a claim in the **{dim}** owned by **``{owner[len(owner)-1]['name']}``** with ID **{claim['id']}**")
 
     if result == False:
         await ctx.channel.send(":warning: Couldn't find any claim for that coordinates. Is the database up to date?")
@@ -341,11 +340,10 @@ async def updateclaims(ctx):
     files = ftp.nlst() # Gets all files
 
     for i, file in enumerate(files):
-        ftp.retrbinary("RETR " + file, open("/home/cli/dracula/claims/" + file, "wb").write)
-        percent = str(i/len(files)*100).split(".")[0]
+        ftp.retrbinary(f"RETR {file}", open(f"/home/cli/dracula/claims/{file}", "wb").write)
         if str(i).endswith("00") or str(i).endswith("25") or str(i).endswith("50") or str(i).endswith("75"):
             try: # Discord timeout might stop loop execution
-                await status.edit(f"[{percent}%] Downloaded file {i} of {len(files)}...")
+                await status.edit(f"[{int(i/len(files)*100)}%] Downloaded file {i} of {len(files)}...")
             except:
                 pass
 
