@@ -27,8 +27,8 @@ async def on_ready():
 @bot.event
 async def on_message(message):
     try:
-        if message.author.id == "557628352828014614" and "Support" in message.embeds[0].description:
-            #await message.edit(suppress=True)
+        if message.author.id == 557628352828014614 and "Support will be with you shortly." in message.embeds[0].description:
+            await message.edit(suppress=True)
             embed=discord.Embed(title="Welcome to your support ticket.", description="Please describe your problem or question and include your Minecraft username or any details that might be relevant, so our staff members can help you as quickly as possbible with the minimum amount of additional questions.", color=0x5865F2)
             await message.channel.send(embed=embed)
     except:
