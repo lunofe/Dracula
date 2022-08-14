@@ -180,9 +180,8 @@ async def embed(ctx,
         msg = await bot.get_channel(672403973822480405).fetch_message(810203884055429140)
         await msg.edit(embeds=embeds)
     elif id == "support":
-        embed=discord.Embed(title="Connections issues and errors like \"Failed to verify username\"...", description="Do you have a genuine Minecraft account that you paid money for?")
-        embed.add_field(name="If yes:", value="First try to restart both Minecraft and your Minecraft launcher, in your case most likely Technic Launcher or Curseforge. If that doesn't help, please open a ticket with the button further down below and we'll help you out!", inline=True)
-        embed.add_field(name="If no:", value="Software piracy is illegal. Although there is an option for servers to accept cracked clients, we will not do that, because we are strictly against software piracy. Furthermore, it involves multiple problems, for example the simple circumvention of bans.", inline=True)
+        embed = discord.Embed(title="Welcome to our support channel.", description="If you have connections issues, take a look at this first:")
+        embed.set_image(url="https://i.imgur.com/HPLLLI4.png")
         await ctx.channel.send(file=discord.File(open("/home/cli/dracula/img/support.png", "rb")), embed=embed)
     elif id == "suggestions":
         embeds = [
