@@ -281,11 +281,10 @@ async def claim(ctx,
 
     for filename in os.listdir("/home/cli/dracula/claims"):
         if filename.endswith(".yml"):
-            file = open(f"/home/cli/dracula/claims/{filename}", "r")
-            content = yaml.safe_load(file.read())
-            file.close()
-            content["id"] = filename.split(".")[0]
-            claims.append(content)
+            with open(f"/home/cli/dracula/claims/{filename}", "r") as file:
+                content = yaml.safe_load(file.read())
+                content["id"] = filename.split(".")[0]
+                claims.append(content)
 
     await ctx.channel.send(f"Loaded {len(claims)} claims.")
 
