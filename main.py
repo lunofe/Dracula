@@ -425,8 +425,11 @@ async def update_mails():
                 embed = discord.Embed(title="Unknown email", description=f"I've received an email that doesn't match the layout of any form:")
                 embed.add_field(name="Sender", value=mail.from_, inline=True)
                 embed.add_field(name="Subject", value=mail.subject, inline=True)
-                embed.set_footer(text={mail.text[:2047]})
-                await channel.send(embed=embed)
+                embed.set_footer(text={mail.text[:2046]})
+                try:
+                    await channel.send(embed=embed)
+                except Exception as e:
+                    await channel.send(f"I've received an email that doesn't match the layout of any form and was unable to post it to this channel. {e}")
 
             # Delete the email and log out
             mailbox.delete(mail.uid)
