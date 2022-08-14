@@ -12,6 +12,7 @@ from imap_tools import MailBox
 bot = discord.Bot(intents=discord.Intents.all())
 servers = [
     528346798138589215, # Vampirism.co
+    430326060635258881, # Vampirism Mod
     692526341987369021 # Dev
 ]
 
