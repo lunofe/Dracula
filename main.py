@@ -278,7 +278,7 @@ async def claim(ctx,
     claims = []
     result = False
 
-    await ctx.respond("Firing up the engines!")
+    await ctx.respond("Loading claims...")
 
     for filename in os.listdir("/home/cli/dracula/claims"):
         if filename.endswith(".yml"):
@@ -318,8 +318,8 @@ async def claim(ctx,
         if (x >= x1) and (x <= x2):
             if (z >= z1) and (z <= z2):
                 result = True
-                owner = requests.get(f"https://api.mojang.com/user/profiles/{claim['Owner']}/names").json()
-                await ctx.channel.send(f"Found a claim in the **{dim}** owned by **``{owner[len(owner)-1]['name']}``** with ID **{claim['id']}**")
+                owner = requests.get(f"https://api.mojang.com/user/profile/{claim['Owner']}").json()
+                await ctx.channel.send(f"Found a claim in the **{dim}** owned by **``{owner['name']}``** with ID **{claim['id']}**")
 
     if result == False:
         await ctx.channel.send(":warning: Couldn't find any claim for that coordinates. Is the database up to date?")
