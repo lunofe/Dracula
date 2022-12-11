@@ -155,7 +155,7 @@ async def embed(ctx,
             discord.Embed(title="Useful links", description="• [Get a brief overview](https://teamlapen.github.io/Vampirism/) about the Vampirism mod and its basic features\n• [Read the wiki](https://github.com/TeamLapen/Vampirism/wiki/Getting-Started) if you want to know how everything works in detail\n• [Apply to become a staff member](https://vampirism.co/staff-applications/)\n• [Appeal your ban](https://vampirism.co/appeal-your-ban/)", color=0x5865F2),
             discord.Embed(title="Nice to know", description="• The server's IP is `vampirism.co`!\n• The server automatically restarts at [02:00 UTC](https://time.is/UTC) <:external_link:904418888551391243>\n• If <@802604397967179776> is online, the server is online as well!", color=0x5865F2)
         ]
-        await ctx.send(file=discord.File(open("/home/cli/dracula/img/welcome.png", "rb")), embeds=embeds)
+        await ctx.send(file=discord.File(open(f"{config.BOT_PATH}/img/welcome.png", "rb")), embeds=embeds)
     elif id == "rules":
         embeds = [
             discord.Embed(title="Treat everyone with respect. Absolutely no harassment, sexism, racism, hate speech, strong/derogatory language, witch hunting or any other discrimination will be tolerated.", color=0x5865F2),
@@ -169,7 +169,7 @@ async def embed(ctx,
         # Todo: This might work in one line.
         view=discord.ui.View()
         view.add_item(discord.ui.Button(emoji="<:minecraft:904427541656371240>", label="See also: Rules for the Minecraft server", url="https://vampirism.co/rules"))
-        await ctx.channel.send(view=view, file=discord.File(open("/home/cli/dracula/img/rules.png", "rb")), embeds=embeds)
+        await ctx.channel.send(view=view, file=discord.File(open(f"{config.BOT_PATH}/img/rules.png", "rb")), embeds=embeds)
     elif id == "roles":
         embeds = [
             discord.Embed().set_image(url="https://i.imgur.com/K4VEM15.png"),
@@ -183,13 +183,13 @@ async def embed(ctx,
     elif id == "support":
         embed = discord.Embed(title="Welcome to our support channel.", description="If you have connections issues, take a look at this first:")
         embed.set_image(url="https://i.imgur.com/HPLLLI4.png")
-        await ctx.channel.send(file=discord.File(open("/home/cli/dracula/img/support.png", "rb")), embed=embed)
+        await ctx.channel.send(file=discord.File(open(f"{config.BOT_PATH}/img/support.png", "rb")), embed=embed)
     elif id == "suggestions":
         embeds = [
             discord.Embed(title="Guidelines", description="• This is the place where you can create a suggestion **for the server.**\n• If you have a suggestion **for the mod**, please post it [here](https://discord.gg/pcjzCdk) <:external_link:904418888551391243>\n\nKeep in mind that this server is literally made for Vampirism, and not just any random other mod out there - we want to choose mods that add on to Vampirism or in some way improve the experience, not add completely unrelated content."),
             discord.Embed(title="How-to:").set_image(url="https://i.imgur.com/HRmNInY.gif")
         ]
-        msg = await ctx.send(embeds=embeds, file=discord.File(open("/home/cli/dracula/img/suggestions.png", "rb")))
+        msg = await ctx.send(embeds=embeds, file=discord.File(open(f"{config.BOT_PATH}/img/suggestions.png", "rb")))
         await msg.create_thread(name="Common Requests and Declined Suggestions")
     await ctx.respond(content=":white_check_mark:", ephemeral=True)
 
@@ -280,9 +280,9 @@ async def claim(ctx,
 
     await ctx.respond("Loading claims...")
 
-    for filename in os.listdir("/home/cli/dracula/claims"):
+    for filename in os.listdir(f"{config.BOT_PATH}/claims"):
         if filename.endswith(".yml"):
-            with open(f"/home/cli/dracula/claims/{filename}", "r") as file:
+            with open(f"{config.BOT_PATH}/claims/{filename}", "r") as file:
                 content = yaml.safe_load(file.read())
                 content["id"] = filename.split(".")[0]
                 claims.append(content)
@@ -335,7 +335,7 @@ async def updateclaims(ctx):
         return
 
     try:
-        os.system("rm /home/cli/dracula/claims/* -r")
+        os.system(f"rm {config.BOT_PATH}/claims/* -r")
     except:
         pass
 
@@ -349,7 +349,7 @@ async def updateclaims(ctx):
     files = ftp.nlst() # Gets all files
 
     for i, file in enumerate(files):
-        ftp.retrbinary(f"RETR {file}", open(f"/home/cli/dracula/claims/{file}", "wb").write)
+        ftp.retrbinary(f"RETR {file}", open(f"{config.BOT_PATH}/claims/{file}", "wb").write)
         if str(i).endswith("00") or str(i).endswith("25") or str(i).endswith("50") or str(i).endswith("75"):
             try: # Discord timeout might stop loop execution
                 await status.edit(f"[{int(i/len(files)*100)}%] Downloaded file {i} of {len(files)}...")
