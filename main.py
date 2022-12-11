@@ -142,7 +142,7 @@ async def delete(ctx,
 # Embeds
 @bot.slash_command(guild_ids=servers)
 async def embed(ctx,
-    id: discord.Option(str, "Select an embed to send", choices=["welcome", "rules", "roles", "support", "suggestions"])
+    id: discord.Option(str, "Select an embed to send", choices=["welcome", "rules", "roles", "support"])
 ):
     """Send embeds"""
     if "Staff" not in str(ctx.author.roles):
@@ -184,13 +184,6 @@ async def embed(ctx,
         embed = discord.Embed(title="Welcome to our support channel.", description="If you have connections issues, take a look at this first:")
         embed.set_image(url="https://i.imgur.com/HPLLLI4.png")
         await ctx.channel.send(file=discord.File(open(f"{config.BOT_PATH}/img/support.png", "rb")), embed=embed)
-    elif id == "suggestions":
-        embeds = [
-            discord.Embed(title="Guidelines", description="• This is the place where you can create a suggestion **for the server.**\n• If you have a suggestion **for the mod**, please post it [here](https://discord.gg/pcjzCdk) <:external_link:904418888551391243>\n\nKeep in mind that this server is literally made for Vampirism, and not just any random other mod out there - we want to choose mods that add on to Vampirism or in some way improve the experience, not add completely unrelated content."),
-            discord.Embed(title="How-to:").set_image(url="https://i.imgur.com/HRmNInY.gif")
-        ]
-        msg = await ctx.send(embeds=embeds, file=discord.File(open(f"{config.BOT_PATH}/img/suggestions.png", "rb")))
-        await msg.create_thread(name="Common Requests and Declined Suggestions")
     await ctx.respond(content=":white_check_mark:", ephemeral=True)
 
 # Forms
