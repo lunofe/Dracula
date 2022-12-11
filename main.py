@@ -172,7 +172,7 @@ async def embed(ctx,
         await ctx.channel.send(view=view, file=discord.File(open(f"{config.BOT_PATH}/img/rules.png", "rb")), embeds=embeds)
     elif id == "roles":
         embeds = [
-            discord.Embed().set_image(url="https://i.imgur.com/K4VEM15.png"),
+            discord.Embed().set_image(url="https://files.vampirism.co/roles.png"),
             discord.Embed(title="Races", description="Show other people what race you're playing as on the server. Please note that your selection must actually represent the truth.")
                 .add_field(name="<:vampire:810192589222445067> for Vampire", value="** **", inline=True)
                 .add_field(name="<:hunter:810192589194002512> for Hunter", value="** **", inline=True)
@@ -182,7 +182,7 @@ async def embed(ctx,
         await msg.edit(embeds=embeds)
     elif id == "support":
         embed = discord.Embed(title="Welcome to our support channel.", description="If you have connections issues, take a look at this first:")
-        embed.set_image(url="https://i.imgur.com/HPLLLI4.png")
+        embed.set_image(url="https://files.vampirism.co/support.png")
         await ctx.channel.send(file=discord.File(open(f"{config.BOT_PATH}/img/support.png", "rb")), embed=embed)
     await ctx.respond(content=":white_check_mark:", ephemeral=True)
 
