@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import config, discord, os, time, requests, yaml, pycountry
+import config, discord, os, datetime, time, requests, yaml, pycountry
 from discord.ext import tasks
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -31,6 +31,9 @@ async def on_message(message):
             await message.edit(suppress=True)
             embed=discord.Embed(title="Welcome to your support ticket.", description="Please describe your problem or question and include your Minecraft username or any details that might be relevant, so our staff members can help you as quickly as possbible with the minimum amount of additional questions.", color=0x5865F2)
             await message.channel.send(embed=embed)
+        if (message.author.id != 700414200497045595) and (message.author.joined_at > datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=5)) and (("tlauncher" in message.content) or ("premium" in message.content) or ("crack" in message.content) or ("verify" in message.content)):
+            embed = discord.Embed(title="You need a genuine Minecraft account that you've paid money for.", description=f"Software piracy is illegal. You're trusting shady developers with access to the files on your computer - in a world where cyber attacks happen on a daily basis.", color=0xFF0000)
+            await message.reply(embed=embed)
     except:
         pass
 
@@ -47,20 +50,6 @@ async def ping(ctx):
     embed.add_field(name="ClientUser", value=f"{bot.user}", inline=True)
     embed.add_field(name="Websocket Gateway", value=f"{bot.ws}", inline=False)
     await ctx.respond(embed=embed)
-
-# Connection issues (cracked?)
-@bot.slash_command(guild_ids=servers)
-async def connection(ctx):
-    """For connections issues and errors like \"Failed to verify username\""""
-    if "Staff" not in str(ctx.author.roles):
-        await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
-        return
-
-    embed=discord.Embed(title="Connections issues and errors like \"Failed to verify username\"...", description="Do you have a genuine Minecraft account that you paid money for?")
-    embed.add_field(name="If yes:", value="First try to restart both Minecraft and your Minecraft launcher, in your case most likely Technic Launcher or Curseforge. If that doesn't help, please open a ticket in <#679722116043505723> and we'll help you out!", inline=True)
-    embed.add_field(name="If no:", value="Software piracy is illegal. Although there is an option for servers to accept cracked clients, we will not do that, because we are strictly against software piracy. Furthermore, it involves multiple problems, for example the simple circumvention of bans.", inline=True)
-    await ctx.respond(content=":white_check_mark:", ephemeral=True)
-    await ctx.channel.send(embed=embed)
 
 # Log upload guide
 @bot.slash_command(guild_ids=servers)
