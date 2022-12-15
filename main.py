@@ -361,6 +361,8 @@ async def update_mails():
 
             # Staff application
             if len(content) == 11:
+                word_count = len(content[7].split()) + len(content[8].split()) + len(content[9].split())
+
                 embed=discord.Embed(title=content[0], description=f"{content[1]} years old, {content[2]}\n:flag_{content[3].lower()}: {pycountry.countries.get(alpha_2=content[3]).name}")
                 embed.add_field(name="Minecraft Username", value=f"`{content[4]}`", inline=True)
                 embed.add_field(name="Discord#Tag", value=f"`{content[5]}`", inline=True)
@@ -369,56 +371,89 @@ async def update_mails():
                 embed.add_field(name="Why do you want to be staff?", value=content[8], inline=False)
                 embed.add_field(name="Why should you be chosen instead of someone else?", value=content[9], inline=False)
                 embed.add_field(name="How many hours could you approximately contribute per week?", value=content[10], inline=False)
-                word_count = len(content[7].split()) + len(content[8].split()) + len(content[9].split())
                 embed.set_footer(text=f"{word_count} words")
+
                 try:
                     if word_count > 50:
-                        msg = await channel.send(content="**STAFF APPLICATION** <@844592732001009686>", embed=embed)
+                        msg = await channel.send(content="**STAFF APPLICATION** <@&844592732001009686>", embed=embed)
                     else:
                         msg = await channel.send(content="**STAFF APPLICATION**", embed=embed)
+
+                    await msg.add_reaction("<:vote_yes:601899059417972737>")
+                    await msg.add_reaction("<:vote_no:601898704231989259>")
+                    await msg.create_thread(name=f"{content[0]}\'s Staff Application")
+
                 except:
-                    msg = await channel.send(content=f"**STAFF APPLICATION** <@844592732001009686>\n\n**{content[0]}**\n{content[1]} years old, {content[2]}\n:flag_{content[3].lower()}: {pycountry.countries.get(alpha_2=content[3]).name}\n\n**Minecraft Username:** `{content[4]}`\n**Discord#Tag:** `{content[5]}`\n**Email:** `{content[6]}`\n\n**Do you have experience as staff?**\n{content[7]}\n\n**Why do you want to be staff?**\n{content[8]}\n\n**Why should you be chosen instead of someone else?**\n{content[9]}\n\n**How many hours could you approximately contribute per week?**\n{content[10]}\n\n*{word_count} words*")
-                await msg.add_reaction("<:vote_yes:601899059417972737>")
-                await msg.add_reaction("<:vote_no:601898704231989259>")
-                await msg.create_thread(name=f"{content[0]}\'s Staff Application")
+                    embed=discord.Embed(title=content[0], description=f"{content[1]} years old, {content[2]}\n:flag_{content[3].lower()}: {pycountry.countries.get(alpha_2=content[3]).name}")
+                    embed.add_field(name="Minecraft Username", value=f"`{content[4]}`", inline=True)
+                    embed.add_field(name="Discord#Tag", value=f"`{content[5]}`", inline=True)
+                    embed.add_field(name="Email", value=f"`{content[6]}`", inline=True)
+                    embed.add_field(name="Do you have experience as staff? Why do you want to be staff? Why should you be chosen instead of someone else?", value="Check the thread 🧵", inline=False)
+                    embed.add_field(name="How many hours could you approximately contribute per week?", value=content[10], inline=False)
+                    embed.set_footer(text=f"{word_count} words")
+
+                    msg = await channel.send(content=f"**STAFF APPLICATION** <@&844592732001009686>", embed=embed)
+                    await msg.add_reaction("<:vote_yes:601899059417972737>")
+                    await msg.add_reaction("<:vote_no:601898704231989259>")
+                    thread = await msg.create_thread(name=f"{content[0]}\'s Staff Application")
+                    await thread.send(f"**Do you have experience as staff?**\n>>> {content[7]}")
+                    await thread.send(f"**Why do you want to be staff?**\n>>> {content[8]}")
+                    await thread.send(f"**Why should you be chosen instead of someone else?**\n>>> {content[9]}")                
 
             # Ban appeal
             elif len(content) == 7:
+                word_count = len(content[5].split()) + len(content[6].split())
+
                 if content[0] == "mc":
                     embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft\nType: {content[1]}")
                 elif content[0] == "dc":
                     embed=discord.Embed(title="Ban Appeal", description=f"Bans: Discord\nType: {content[1]}")
                 else:
                     embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft & Discord\nType: {content[1]}")
-
                 embed.add_field(name="Minecraft Username", value=f"`{content[2]}`", inline=True)
                 embed.add_field(name="Discord#Tag", value=f"`{content[3]}`", inline=True)
                 embed.add_field(name="Email", value=f"`{content[4]}`", inline=True)
                 embed.add_field(name="Why have you been banned?", value=content[5], inline=False)
                 embed.add_field(name="Why should you be unbanned?", value=content[6], inline=False)
-                word_count = len(content[5].split()) + len(content[6].split())
                 embed.set_footer(text=f"{word_count} words")
+
                 try:
                     if word_count > 50:
-                        msg = await channel.send(content="<@844592732001009686>", embed=embed)
+                        msg = await channel.send(content="<@&844592732001009686>", embed=embed)
                     else:
                         msg = await channel.send(embed=embed)
+
+                    await msg.add_reaction("<:vote_yes:601899059417972737>")
+                    await msg.add_reaction("<:vote_no:601898704231989259>")
+                    await msg.create_thread(name=f"{content[2]}\'s Ban Appeal")
+
                 except:
-                    msg = await channel.send(content=f"**Ban Appeal**\n{embed.description}\n\n**Minecraft Username:** `{content[2]}`\n**Discord#Tag:** `{content[3]}`\n**Email:** `{content[4]}`\n\n**Why have you been banned?**\n{content[5]}\n\n**Why should you be unbanned?**\n{content[6]}\n\n*{word_count} words*")
-                await msg.add_reaction("<:vote_yes:601899059417972737>")
-                await msg.add_reaction("<:vote_no:601898704231989259>")
-                await msg.create_thread(name=f"{content[2]}\'s Ban Appeal")
+                    if content[0] == "mc":
+                        embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft\nType: {content[1]}")
+                    elif content[0] == "dc":
+                        embed=discord.Embed(title="Ban Appeal", description=f"Bans: Discord\nType: {content[1]}")
+                    else:
+                        embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft & Discord\nType: {content[1]}")
+                    embed.add_field(name="Minecraft Username", value=f"`{content[2]}`", inline=True)
+                    embed.add_field(name="Discord#Tag", value=f"`{content[3]}`", inline=True)
+                    embed.add_field(name="Email", value=f"`{content[4]}`", inline=True)
+                    embed.add_field(name="Why have you been banned? Why should you be unbanned?", value="Check the thread 🧵", inline=False)
+                    embed.set_footer(text=f"{word_count} words")
+
+                    msg = await channel.send(content=f"**BAN APPEAL** <@&844592732001009686>", embed=embed)
+                    await msg.add_reaction("<:vote_yes:601899059417972737>")
+                    await msg.add_reaction("<:vote_no:601898704231989259>")
+                    thread = await msg.create_thread(name=f"{content[2]}\'s Ban Appeal")
+                    await thread.send(f"**Why have you been banned?**\n>>> {content[5]}")
+                    await thread.send(f"**Why should you be unbanned?**\n>>> {content[6]}")                
 
             # Unknown
             else:
                 embed = discord.Embed(title="Unknown email", description=f"I've received an email that doesn't match the layout of any form:")
                 embed.add_field(name="Sender", value=mail.from_, inline=True)
                 embed.add_field(name="Subject", value=mail.subject, inline=True)
-                embed.set_footer(text={mail.text})
-                try:
-                    await channel.send(embed=embed)
-                except:
-                    await channel.send(content=f"**Unknown email**\n\n**Sender:** {mail.from_}\n**Subject:** {mail.subject}\n\n{mail.text}")
+                await channel.send(embed=embed)
+                return
 
             # Delete the email and log out
             mailbox.delete(mail.uid)
