@@ -131,7 +131,7 @@ async def delete(ctx,
 # Embeds
 @bot.slash_command(guild_ids=servers)
 async def embed(ctx,
-    id: discord.Option(str, "Select an embed to send", choices=["welcome", "rules", "roles", "support"])
+    id: discord.Option(str, "Select an embed to send", choices=["welcome", "rules", "support"])
 ):
     """Send embeds"""
     if "Staff" not in str(ctx.author.roles):
@@ -159,16 +159,6 @@ async def embed(ctx,
         view=discord.ui.View()
         view.add_item(discord.ui.Button(emoji="<:minecraft:904427541656371240>", label="See also: Rules for the Minecraft server", url="https://vampirism.co/rules"))
         await ctx.channel.send(view=view, file=discord.File(open(f"{config.BOT_PATH}/img/rules.png", "rb")), embeds=embeds)
-    elif id == "roles":
-        embeds = [
-            discord.Embed().set_image(url="https://files.vampirism.co/roles.png"),
-            discord.Embed(title="Races", description="Show other people what race you're playing as on the server. Please note that your selection must actually represent the truth.")
-                .add_field(name="<:vampire:810192589222445067> for Vampire", value="** **", inline=True)
-                .add_field(name="<:hunter:810192589194002512> for Hunter", value="** **", inline=True)
-                .add_field(name="<:human:810193732703486032> for Human", value="** **", inline=True)
-        ]
-        msg = await bot.get_channel(672403973822480405).fetch_message(810203884055429140)
-        await msg.edit(embeds=embeds)
     elif id == "support":
         embed = discord.Embed(title="Welcome to our support channel.", description="If you have connections issues, take a look at this first:")
         embed.set_image(url="https://files.vampirism.co/support.png")
