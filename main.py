@@ -3,7 +3,9 @@
 import config, discord, os, datetime, time, requests, yaml, pycountry
 from discord.ext import tasks
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service as ChromeService
 from webdriver_manager.chrome import ChromeDriverManager
 from ftplib import FTP
 from imap_tools import MailBox
@@ -216,25 +218,27 @@ async def restart(ctx):
         # Init
         chrome_options = Options()
         chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--window-size=1920,1080")
         chrome_options.add_argument("--start-maximized")
-        browser = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+        browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
         # Login
         browser.get("https://panel.apexminecrafthosting.com/site/login")
-        browser.find_element_by_id("LoginForm_name").send_keys(config.APEX_NAME)
-        browser.find_element_by_id("LoginForm_password").send_keys(config.APEX_PASS)
-        browser.find_element_by_name("yt0").click()
+        browser.find_element(By.ID, "CybotCookiebotDialogBodyButtonDecline").click()
+        browser.find_element(By.ID, "LoginForm_name").send_keys(config.APEX_NAME)
+        browser.find_element(By.ID, "LoginForm_password").send_keys(config.APEX_PASS)
+        browser.find_element(By.NAME, "yt0").click()
         # Console
         browser.get("https://panel.apexminecrafthosting.com/server/log/79157")
-        browser.find_element_by_id("command").send_keys("save-all")
-        browser.find_element_by_name("yt4").click()
+        browser.find_element(By.ID, "command").send_keys("save-all")
+        browser.find_element(By.NAME, "yt4").click()
         time.sleep(10)
         # Restart
-        browser.find_element_by_name("yt3").click()
+        browser.find_element(By.NAME, "yt3").click()
         time.sleep(1)
-        browser.find_element_by_class_name("swal2-confirm").click()
+        browser.find_element(By.CLASS_NAME, "swal2-confirm").click()
         time.sleep(5)
-        browser.find_element_by_name("yt0").click()
+        browser.find_element(By.NAME, "yt0").click()
         # Finally
         browser.quit()
         await ctx.channel.send("I've restarted the server!")
