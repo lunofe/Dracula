@@ -152,6 +152,7 @@ async def embed(ctx,
             discord.Embed(title="Nice to know", description="• The server's IP is `vampirism.co`!\n• The server automatically restarts at [02:00 UTC](https://time.is/UTC) <:external_link:904418888551391243>\n• If <@802604397967179776> is online, the server is online as well!", color=0x5865F2)
         ]
         await ctx.send(files=[discord.File(open(f"{config.BOT_PATH}/img/welcome.png", "rb")), discord.File(open(f"{config.BOT_PATH}/img/banner_bat.png", "rb"))], embeds=embeds)
+        await ctx.send(files=[discord.File(open(f"{config.BOT_PATH}/img/apex_hosting.gif", "rb"))])
     elif id == "rules":
         embeds = [
             discord.Embed(title="Treat everyone with respect. Absolutely no harassment, sexism, racism, hate speech, strong/derogatory language, witch hunting or any other discrimination will be tolerated.", color=0x5865F2),
