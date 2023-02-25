@@ -225,12 +225,19 @@ async def restart(ctx):
         browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
         # Login
         browser.get("https://panel.apexminecrafthosting.com/site/login")
-        browser.find_element(By.ID, "CybotCookiebotDialogBodyButtonDecline").click()
+        try:
+            browser.find_element(By.ID, "CybotCookiebotDialogBodyButtonDecline").click()
+        except:
+            pass
         browser.find_element(By.ID, "LoginForm_name").send_keys(config.APEX_NAME)
         browser.find_element(By.ID, "LoginForm_password").send_keys(config.APEX_PASS)
         browser.find_element(By.NAME, "yt0").click()
         # Console
         browser.get("https://panel.apexminecrafthosting.com/server/log/79157")
+        try:
+            browser.find_element(By.ID, "CybotCookiebotDialogBodyButtonDecline").click()
+        except:
+            pass
         browser.find_element(By.ID, "command").send_keys("save-all")
         browser.find_element(By.NAME, "yt4").click()
         time.sleep(10)
