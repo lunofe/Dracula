@@ -465,21 +465,11 @@ async def update_mails():
             # Delete the email and log out
             mailbox.delete(mail.uid)
 
-# Update mails
-@bot.slash_command(guild_ids=servers)
-async def updatemails(ctx):
-    """Check for new staff applications and ban appeals"""
-    if "Staff" not in str(ctx.author.roles):
-        await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
-        return
-
-    await ctx.respond(content=":white_check_mark:", ephemeral=True)
-    await update_mails()
 
 #------------------------------------------------------------------------------#
 
 # Update mails
-@tasks.loop(hours=4)
+@tasks.loop(hours=1)
 async def update_mails_task():
     await update_mails()
 
