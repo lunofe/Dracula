@@ -23,7 +23,8 @@ servers = [
 async def on_ready():
     await bot.change_presence(activity=discord.Game(name="vampirism.co"))
     update_mails_task.start()
-    print("Ready!")
+    check_roles_task.start()
+    print("Tasks started, ready!")
 
 # Automatically answer certain messages
 @bot.event
@@ -465,6 +466,21 @@ async def update_mails():
             # Delete the email and log out
             mailbox.delete(mail.uid)
 
+async def check_roles():
+    channel = bot.get_channel(831713643090804777)
+    await channel.send(f"Checking roles of {len(channel.guild.members)} members...")
+
+    exclusive = ["Vampire", "Hunter", "Werewolf", "Human"]
+    for member in channel.guild.members:
+        roles = []
+        for role in member.roles:
+            if role.name in exclusive:
+                roles.append(role.name)
+        if len(roles) > 1:
+            await channel.send(f"{member.mention} has multiple exclusive roles: `{'`, `'.join(roles)}`... Removing all of them.")
+            for role in member.roles:
+                if role.name in roles:
+                    await member.remove_roles(role)
 
 #------------------------------------------------------------------------------#
 
@@ -472,6 +488,11 @@ async def update_mails():
 @tasks.loop(hours=1)
 async def update_mails_task():
     await update_mails()
+
+# Check roles
+@tasks.loop(hours=24)
+async def check_roles_task():
+    await check_roles()
 
 #------------------------------------------------------------------------------#
 
