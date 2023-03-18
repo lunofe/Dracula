@@ -67,7 +67,7 @@ async def logs(ctx):
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
         return
 
-    embed=discord.Embed(title="Upload your logs", description="<:curseforge:904463104505688124> [CurseForge](https://vampirism.co/install-curseforge/upload-logs/) <:external_link:904418888551391243>\n<:technic:904463105780752444> [TechnicLauncher](https://vampirism.co/install-technic/upload-logs/) <:external_link:904418888551391243>")
+    embed=discord.Embed(title="Upload your logs", description="Guides:\n<:curseforge:904463104505688124> [CurseForge](https://vampirism.co/install-curseforge/upload-logs/) <:external_link:904418888551391243>\n<:technic:904463105780752444> [TechnicLauncher](https://vampirism.co/install-technic/upload-logs/) <:external_link:904418888551391243>", color=0x5865F2)
     await ctx.respond(content=":white_check_mark:", ephemeral=True)
     await ctx.channel.send(embed=embed)
 
@@ -107,11 +107,11 @@ async def close(ctx,
         return
 
     if mode == "Regular":
-        embed=discord.Embed(title="If there's nothing else we can help you with, we would like to go ahead close this ticket now.", description="You can either do this yourself by scrolling up to the start of the ticket and then clicking the \"Close\" button, or just let us know that you've read this and we'll do it.")
-        embed.set_footer(text="And feel free to open a new ticket at any time if there's something we can do for you!")
+        embed=discord.Embed(title="If there's nothing else we can help you with, we would like to go ahead close this ticket now.", color=0x5865F2)
     else:
-        embed=discord.Embed(title="If you still require help, please answer now.", description="It's been a while now since you last sent a message and we will go ahead close this ticket soon.")
-    await ctx.respond(content=f"{user}", embed=embed)
+        embed=discord.Embed(title="If you still require help, please answer now.", description="It's been a while since you last sent a message and we will go ahead and close this ticket soon if we don't hear from you.", color=0x5865F2)
+    await ctx.respond(content=":white_check_mark:", ephemeral=True)
+    await ctx.channel.send(content=f"{user}", embed=embed)
 
 # Delete
 @bot.slash_command(guild_ids=servers)
