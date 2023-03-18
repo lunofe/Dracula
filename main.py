@@ -467,8 +467,6 @@ async def update_mails():
 
 async def check_roles():
     channel = bot.get_channel(831713643090804777)
-    await channel.send(f"Checking roles of {len(channel.guild.members)} members...")
-
     exclusive = ["Vampire", "Hunter", "Werewolf", "Human"]
     for member in channel.guild.members:
         roles = []
