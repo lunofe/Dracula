@@ -155,13 +155,13 @@ async def embed(ctx,
         await ctx.send(files=[discord.File(open(f"{config.BOT_PATH}/img/banner_bat.png", "rb"))], embeds=embeds, content="** **")
     elif id == "rules":
         embeds = [
-            discord.Embed(title="Treat everyone with respect. Absolutely no harassment, sexism, racism, hate speech, strong/derogatory language, witch hunting or any other discrimination will be tolerated.", color=0x5865F2),
+            discord.Embed(title="Treat everyone with respect. Absolutely no harassment, sexism, racism, hate speech, swearing, derogatory language, witch hunting or any other discrimination will be tolerated.", color=0x5865F2),
             discord.Embed(title="Be civil and use common sense. If you do something that's not explicitly prohibited by the rules, but we think isn't okay nonetheless, we'll still take actions as mentioned further down below.", color=0x5865F2),
             discord.Embed(title="Keep things family friendly. No NSFW or obscene content. This includes but is not limited to text, images, or links featuring nudity, sex, hard violence, or other graphically disturbing content.", color=0x5865F2),
-            discord.Embed(title="No spam or self-promotion (server invites, advertisements, etc) without permission from a staff member. This includes DMing fellow members.", color=0x5865F2),
-            discord.Embed(title="Speak English in public chats. Vampirism's community is spread all over the world and we want that everyone can be a part of it.", color=0x5865F2),
-            discord.Embed(title="If you see something against the rules or something that makes you feel unsafe, message staff immediately. We want this server to be a welcoming space!", color=0x5865F2),
-            discord.Embed(title="Breaking any of these rules will result in your message(s) being deleted, a temporary mute, a warning (multiple will lead to bans), a temporary ban or a permanent ban.", color=0x5865F2)
+            discord.Embed(title="No spam or self-promotion (server invites, advertisements, etc.) without permission from a staff member. This includes DMing fellow members.", color=0x5865F2),
+            discord.Embed(title="Speak English in public chats and avoid excessive use of caps, symbols, emojis, or other elements that clutter the conversation.", color=0x5865F2),
+            discord.Embed(title="If you see something against the rules or something that makes you feel unsafe, message staff immediately. We want this server to be a welcoming and safe space!", color=0xED4245),
+            discord.Embed(title="Breaking any of these rules will result in your message(s) being deleted, a temporary mute, a warning (multiple will lead to bans), a temporary ban or a permanent ban.", color=0xED4245)
         ]
         # Todo: This might work in one line.
         view=discord.ui.View()
