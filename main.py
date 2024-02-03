@@ -73,30 +73,6 @@ async def logs(ctx):
 
 # Ticket close
 @bot.slash_command(guild_ids=servers)
-async def reject(ctx,
-    reason: discord.Option(str, "Reason for rejection")
-):
-    """Reject a suggestion"""
-    if "Staff" not in str(ctx.author.roles):
-        await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
-        return
-
-    # Make sure it's a thread
-    if ctx.channel.type != discord.ChannelType.public_thread:
-        await ctx.respond(":warning: This command can only be used in threads.", ephemeral=True)
-        return
-
-    try:
-        await ctx.channel.owner.send(f"{ctx.author.mention} has closed your suggestion thread with the title *{ctx.channel.name}*.\n{reason}")
-        await ctx.respond(":white_check_mark:", ephemeral=True)
-    except:
-        await ctx.respond("Couldn't message the thread owner.", ephemeral=True)
-    time.sleep(3)
-    
-    await ctx.channel.delete()
-
-# Ticket close
-@bot.slash_command(guild_ids=servers)
 async def close(ctx,
     user: discord.Option(str, "@Tag the user, then press TAB"),
     mode: discord.Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Regular", "Stale"])
