@@ -205,53 +205,6 @@ async def forms(ctx,
     except Exception as e:
         await ctx.respond(f":warning: {e}")
 
-# Restart
-@bot.slash_command(guild_ids=servers)
-async def restart(ctx):
-    """Restarts the server"""
-    if "Staff" not in str(ctx.author.roles):
-        await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
-        return
-
-    try:
-        await ctx.respond("Alright, one moment.")
-        # Init
-        chrome_options = Options()
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--no-sandbox")
-        chrome_options.add_argument("--window-size=1920,1080")
-        chrome_options.add_argument("--start-maximized")
-        browser = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
-        # Login
-        browser.get("https://panel.apexminecrafthosting.com/site/login")
-        try:
-            browser.find_element(By.ID, "CybotCookiebotDialogBodyButtonDecline").click()
-        except:
-            pass
-        browser.find_element(By.ID, "LoginForm_name").send_keys(config.APEX_NAME)
-        browser.find_element(By.ID, "LoginForm_password").send_keys(config.APEX_PASS)
-        browser.find_element(By.NAME, "yt0").click()
-        # Console
-        browser.get("https://panel.apexminecrafthosting.com/server/log/79157")
-        try:
-            browser.find_element(By.ID, "CybotCookiebotDialogBodyButtonDecline").click()
-        except:
-            pass
-        browser.find_element(By.ID, "command").send_keys("save-all")
-        browser.find_element(By.NAME, "yt4").click()
-        time.sleep(10)
-        # Restart
-        browser.find_element(By.NAME, "yt3").click()
-        time.sleep(1)
-        browser.find_element(By.CLASS_NAME, "swal2-confirm").click()
-        time.sleep(5)
-        browser.find_element(By.NAME, "yt0").click()
-        # Finally
-        browser.quit()
-        await ctx.channel.send("I've restarted the server!")
-    except Exception as e:
-        await ctx.channel.send(f":warning: {e}")
-
 # Claims
 @bot.slash_command(guild_ids=servers)
 async def claim(ctx,
