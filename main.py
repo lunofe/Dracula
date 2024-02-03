@@ -176,9 +176,10 @@ async def embed(ctx,
 # Forms
 @bot.slash_command(guild_ids=servers)
 async def forms(ctx,
-    type: discord.Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Staff Application", "Ban Appeal"]),
-    action: discord.Option(str, "Write, click or select an option with the arrow keys, then press TAB", choices=["Accept", "Reject"]),
-    user: discord.Option(str, "@Tag the user, write their ID or full name (with #discriminator), then press TAB")
+    type: discord.Option(str, choices=["Staff Application", "Ban Appeal"]),
+    action: discord.Option(str, choices=["Accept", "Reject"]),
+    user: discord.Option(discord.Member),
+    reason: discord.Option(str, required = False)
 ):
     """Send automated answers"""
     if "Staff" not in str(ctx.author.roles):
@@ -186,25 +187,23 @@ async def forms(ctx,
         return
 
     try:
-        member = ctx.guild.get_member(int(user))
-    except:
-        member = ctx.guild.get_member_named(user)
+        if type == "Staff Application" and action == "Accept":
+            await user.send(f"Hey! Your application has been accepted. You will hear from us shortly.\n\nIn the meantime, you can take a look at this: <https://1literzinalco.github.io/vampirism/staff.html>\n\nWe're using \"Trello\" to organize everything important, such as bugs and punishments. Check out this brief overview: <https://youtu.be/AphRCn5__38> and then join our board: ||<{config.TRELLO}>|| (keep this link secret!)")
+        elif type == "Staff Application" and action == "Reject":
+            await user.send(f"Hey! Your application has been rejected. You can reapply in two weeks at the earliest!")
+            if reason:
+                await user.send(f">>> {reason}")
 
-    if member is not None:
-        try:
-            if type == "Staff Application" and action == "Accept":
-                await member.send(f"Hey! Your application has been accepted. You will hear from us shortly.\n\nIn the meantime, you can take a look at this: <https://1literzinalco.github.io/vampirism/staff.html>\n\nWe're using \"Trello\" to organize everything important, such as bugs and punishments. Check out this brief overview: <https://youtu.be/AphRCn5__38> and then join our board: ||<{config.TRELLO}>|| (keep this link secret!)")
-            elif type == "Staff Application" and action == "Reject":
-                await member.send(f"Hey! Your application has been rejected. You can reapply in two weeks at the earliest!")
-            elif type == "Ban Appeal" and action == "Accept":
-                await member.send("Your ban appeal has been accepted. You will be unbanned within 24 hours.")
-            elif type == "Ban Appeal" and action == "Reject":
-                await member.send("Your ban appeal has been rejected. You can appeal again in two weeks at the earliest.")
-            await ctx.respond(f"{member.name}'s {type.lower()} has been {action.lower()}ed!")
-        except Exception as e:
-            await ctx.respond(f":warning: {e}")
-    else:
-        await ctx.respond(f":warning: I couldn't find a user by searching for `{user}`.")
+        elif type == "Ban Appeal" and action == "Accept":
+            await user.send("Your ban appeal has been accepted. You will be unbanned within 24 hours.")
+        elif type == "Ban Appeal" and action == "Reject":
+            await user.send("Your ban appeal has been rejected. You can appeal again in two weeks at the earliest.")
+            if reason:
+                await user.send(f">>> {reason}")
+
+        await ctx.respond(f"`{user.name}`'s {type.lower()} has been {action.lower()}ed!")
+    except Exception as e:
+        await ctx.respond(f":warning: {e}")
 
 # Restart
 @bot.slash_command(guild_ids=servers)
