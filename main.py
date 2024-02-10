@@ -47,18 +47,6 @@ async def on_message(message):
 
 #------------------------------------------------------------------------------#
 
-
-# Ping
-@bot.slash_command(guild_ids=servers)
-async def ping(ctx):
-    """Test bot functionality"""
-    embed=discord.Embed(title="Dracula")
-    embed.add_field(name="Host", value=f"{os.uname()}", inline=False)
-    embed.add_field(name="Latency", value=f"{bot.latency}", inline=True)
-    embed.add_field(name="ClientUser", value=f"{bot.user}", inline=True)
-    embed.add_field(name="Websocket Gateway", value=f"{bot.ws}", inline=False)
-    await ctx.respond(embed=embed)
-
 # Log upload guide
 @bot.slash_command(guild_ids=servers)
 async def logs(ctx):
