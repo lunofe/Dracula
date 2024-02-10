@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
 
-import config, discord, os, datetime, time, requests, yaml, pycountry
-from discord.ext import tasks
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service as ChromeService
-from webdriver_manager.chrome import ChromeDriverManager
+import datetime
+import json
+import os
 from ftplib import FTP
+
+import discord
+import pycountry
+import requests
+import yaml
+from discord.ext import tasks
 from imap_tools import MailBox
+
+import config
 
 # Init
 bot = discord.Bot(intents=discord.Intents.all())
