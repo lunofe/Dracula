@@ -166,100 +166,114 @@ async def forms(ctx,
     except Exception as e:
         await ctx.respond(f":warning: {e}")
 
+# FTP update
+async def ftp_update(ctx, local, remote):
+    try:
+        os.system(f"rm {config.BOT_PATH}/{local}/* -r")
+    except:
+        pass
+
+    status = await ctx.channel.send(f"{config.EMOJI_LOADING} Updating database...")
+    ftp = FTP(config.FTP_HOST)
+    ftp.login(config.FTP_NAME, config.FTP_PASS)
+    ftp.cwd(remote)
+    files = ftp.nlst()
+
+    for i, file in enumerate(files):
+        ftp.retrbinary(f"RETR {file}", open(f"{config.BOT_PATH}/{local}/{file}", "wb").write)
+        if i % 25 == 0:
+            try: # Discord timeout might stop loop execution
+                await status.edit(f"{config.EMOJI_LOADING} [{int(i/len(files)*100)}%] Downloaded file {i} of {len(files)}...")
+            except:
+                pass
+
+    await status.edit(f"{config.EMOJI_OK} Successfully downloaded {len(files)} files.")
+    ftp.close()
+
 # Claims
 @bot.slash_command(guild_ids=servers)
-async def claim(ctx,
+async def claims(ctx,
     x: discord.Option(int, "X coordinate of a block in the claim"),
-    z: discord.Option(int, "Z coordinate of a block in the claim")
+    z: discord.Option(int, "Z coordinate of a block in the claim"),
+    update: discord.Option(bool, "Update the database?")
 ):
     """Find out which claim was created first"""
     if "Staff" not in str(ctx.author.roles):
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
         return
 
-    claims = []
-    result = False
+    await ctx.respond(f":mag_right: Searching for claims at X: `{x}`, Z: `{z}`...")
+    hit = False
 
-    await ctx.respond("Loading claims...")
+    if update:
+        await ftp_update(ctx, "claims", "plugins/GriefPreventionData/ClaimData")
+    else:
+        await ctx.channel.send(f"{config.EMOJI_OK} Loaded {len(os.listdir(f'{config.BOT_PATH}/claims'))} cached claims from {datetime.datetime.fromtimestamp(os.path.getmtime(f'{config.BOT_PATH}/claims')).strftime('%Y-%m-%d %H:%M')} UTC")
 
     for filename in os.listdir(f"{config.BOT_PATH}/claims"):
         if filename.endswith(".yml"):
             with open(f"{config.BOT_PATH}/claims/{filename}", "r") as file:
-                content = yaml.safe_load(file.read())
-                content["id"] = filename.split(".")[0]
-                claims.append(content)
+                claim = yaml.safe_load(file.read())
+                id = filename.split(".")[0]
 
-    await ctx.channel.send(f"Loaded {len(claims)} claims.")
+                dim = claim["Lesser Boundary Corner"].split(";")[0]
+                if dim == "world":
+                    dim = "Overworld"
+                elif dim == "DIM1":
+                    dim = "End"
+                elif dim == "DIM-1":
+                    dim = "Nether"
 
-    for claim in claims:
-        dim = claim["Lesser Boundary Corner"].split(";")[0]
-        x_l = int(claim["Lesser Boundary Corner"].split(";")[1])
-        x_g = int(claim["Greater Boundary Corner"].split(";")[1])
-        z_l = int(claim["Lesser Boundary Corner"].split(";")[3])
-        z_g = int(claim["Greater Boundary Corner"].split(";")[3])
+                x_l = int(claim["Lesser Boundary Corner"].split(";")[1])
+                x_g = int(claim["Greater Boundary Corner"].split(";")[1])
+                z_l = int(claim["Lesser Boundary Corner"].split(";")[3])
+                z_g = int(claim["Greater Boundary Corner"].split(";")[3])
+                x1, x2 = sorted([x_l, x_g])
+                z1, z2 = sorted([z_l, z_g])
 
-        if dim == "world": # Pretty print the dimension
-            dim = "Overworld"
-        elif dim == "DIM1":
-            dim = "End"
-        elif dim == "DIM-1":
-            dim = "Nether"
-        if x_l > x_g: # Sort X coords so x1 is smaller than x2
-            x1 = x_g
-            x2 = x_l
-        else:
-            x1 = x_l
-            x2 = x_g
-        if z_l > z_g: # Sort Z coords so z1 is smaller than z2
-            z1 = z_g
-            z2 = z_l
-        else:
-            z1 = z_l
-            z2 = z_g
+                if x1 <= x <= x2 and z1 <= z <= z2:
+                    hit = True
+                    owner = "Admin" if claim["Owner"] == "" else requests.get(f"https://sessionserver.mojang.com/session/minecraft/profile/{claim['Owner']}").json()["name"]
+                    await ctx.channel.send(f"({dim}) `{owner}` **♯{id}**")
 
-        if (x >= x1) and (x <= x2):
-            if (z >= z1) and (z <= z2):
-                result = True
-                owner = requests.get(f"https://api.mojang.com/user/profile/{claim['Owner']}").json()
-                await ctx.channel.send(f"Found a claim in the **{dim}** owned by **``{owner['name']}``** with ID **{claim['id']}**")
+    await ctx.channel.send(f"{config.EMOJI_NO} Couldn't find any claim for those coordinates." if hit == False else "> *No further results*")
 
-    if result == False:
-        await ctx.channel.send(":warning: Couldn't find any claim for that coordinates. Is the database up to date?")
-    else:
-        await ctx.channel.send("*No further results*")
-
-# Update claims
+# Alts
 @bot.slash_command(guild_ids=servers)
-async def updateclaims(ctx):
-    """Update the local database of claims"""
+async def alts(ctx,
+    search: discord.Option(str, "Search term (Username, UUID or parts of both)"),
+    update: discord.Option(bool, "Update the database?")
+):
+    """Find alts based on hardware IDs"""
     if "Staff" not in str(ctx.author.roles):
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
         return
+    
+    await ctx.respond(f":mag_right: Searching alts for `{search}`...")
+    hit = False
 
-    try:
-        os.system(f"rm {config.BOT_PATH}/claims/* -r")
-    except:
-        pass
+    if update:
+        await ftp_update(ctx, "hwid", "config/hwid")
+    else:
+        await ctx.channel.send(f"{config.EMOJI_OK} Loaded {len(os.listdir(f'{config.BOT_PATH}/hwid'))} cached hardware IDs from {datetime.datetime.fromtimestamp(os.path.getmtime(f'{config.BOT_PATH}/hwid')).strftime('%Y-%m-%d %H:%M')} UTC")
 
-    await ctx.respond("Hang on for a few minutes!")
+    for filename in os.listdir(f"{config.BOT_PATH}/hwid"):
+        with open(f"{config.BOT_PATH}/hwid/{filename}", "r") as file:
+            lines = file.readlines()
+            if len(lines) > 1:
+                content = ""
+                for line in lines:
+                    uuid = line.strip()
+                    response = requests.get(f"https://sessionserver.mojang.com/session/minecraft/profile/{uuid}")
+                    name = json.loads(response.text)["name"]
+                    content += f"`{uuid}` `{name}`\n"
+                if search in content:
+                    hit = True
+                    await ctx.channel.send(content)
 
-    ftp = FTP(config.FTP_HOST)
-    ftp.login(config.FTP_NAME, config.FTP_PASS)
-    status = await ctx.channel.send("Connection established...")
+    await ctx.channel.send(f"{config.EMOJI_NO} Couldn't find any alts based on hardware IDs." if hit == False else "> *No further results*")
 
-    ftp.cwd("plugins/GriefPreventionData/ClaimData")
-    files = ftp.nlst() # Gets all files
-
-    for i, file in enumerate(files):
-        ftp.retrbinary(f"RETR {file}", open(f"{config.BOT_PATH}/claims/{file}", "wb").write)
-        if str(i).endswith("00") or str(i).endswith("25") or str(i).endswith("50") or str(i).endswith("75"):
-            try: # Discord timeout might stop loop execution
-                await status.edit(f"[{int(i/len(files)*100)}%] Downloaded file {i} of {len(files)}...")
-            except:
-                pass
-
-    await status.edit(f"Successfully downloaded {len(files)} files.")
-    #ftp.close()
+#------------------------------------------------------------------------------#
 
 # Get new emails via imap and send the content to the staff channel
 async def update_mails():
