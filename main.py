@@ -277,11 +277,14 @@ async def alts(ctx,
     else:
         await ctx.channel.send(f"{config.EMOJI_OK} Loaded {len(os.listdir(f'{config.BOT_PATH}/hwid'))} cached hardware IDs from {datetime.datetime.fromtimestamp(os.path.getmtime(f'{config.BOT_PATH}/hwid')).strftime('%Y-%m-%d %H:%M')} UTC")
 
+    if search == "*":
+        search = " "
+
     for filename in os.listdir(f"{config.BOT_PATH}/hwid"):
         with open(f"{config.BOT_PATH}/hwid/{filename}", "r") as file:
             lines = file.readlines()
             if len(lines) > 1:
-                content = ""
+                content = f"- **__`{filename.split('.')[0]}`__**\n"
                 for line in lines:
                     uuid = line.strip()
                     name = uuid_to_username(uuid)
