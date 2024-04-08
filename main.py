@@ -174,7 +174,7 @@ async def forms(ctx,
 # FTP update
 async def ftp_update(ctx, local, remote):
     try:
-        os.system(f"rm {config.BOT_PATH}/{local}/* -r")
+        os.system(f"rm {config.BOT_PATH}/usernamecache.json {config.BOT_PATH}/{local}/* -r")
     except:
         pass
 
@@ -185,6 +185,8 @@ async def ftp_update(ctx, local, remote):
 
     ftp = FTP(config.FTP_HOST)
     ftp.login(config.FTP_NAME, config.FTP_PASS)
+
+    ftp.retrbinary("RETR usernamecache.json", open(f"{config.BOT_PATH}/usernamecache.json", "wb").write)
     ftp.cwd(remote)
     files = ftp.nlst()
 
@@ -198,6 +200,15 @@ async def ftp_update(ctx, local, remote):
 
     await status.edit(f"{config.EMOJI_OK} Successfully downloaded {len(files)} files.")
     ftp.close()
+
+# Username cache
+def uuid_to_username(uuid):
+    try:
+        with open(f"{config.BOT_PATH}/usernamecache.json", "r") as file:
+            cache = json.load(file)
+            return cache[uuid]
+    except:
+        return uuid
 
 # Claims
 @bot.slash_command(guild_ids=servers)
@@ -242,7 +253,7 @@ async def claims(ctx,
 
                 if x1 <= x <= x2 and z1 <= z <= z2:
                     hit = True
-                    owner = "Admin" if claim["Owner"] == "" else requests.get(f"https://sessionserver.mojang.com/session/minecraft/profile/{claim['Owner']}").json()["name"]
+                    owner = "Admin" if claim["Owner"] == "" else uuid_to_username(claim["Owner"])
                     await ctx.channel.send(f"({dim}) `{owner}` **♯{id}**")
 
     await ctx.channel.send(f"{config.EMOJI_NO} Couldn't find any claim for those coordinates." if hit == False else "> *No further results*")
@@ -273,10 +284,13 @@ async def alts(ctx,
                 content = ""
                 for line in lines:
                     uuid = line.strip()
-                    response = requests.get(f"https://sessionserver.mojang.com/session/minecraft/profile/{uuid}")
-                    name = json.loads(response.text)["name"]
-                    content += f"`{uuid}` `{name}`\n"
-                if search in content:
+                    name = uuid_to_username(uuid)
+                    content += f"  - `{uuid}` `{name}`\n"
+                
+                if any(uuid in content for uuid in config.STAFF_UUIDS):
+                    continue
+
+                if search.lower() in content.lower():
                     hit = True
                     await ctx.channel.send(content)
 
