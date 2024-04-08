@@ -42,7 +42,7 @@ async def on_message(message):
             await message.channel.send(embed=embed)
         # Auto-respond to messages regarding cracked Minecraft accounts
         if (message.author.joined_at > datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=15)) and (("tlauncher" in message.content) or ("premium" in message.content) or ("crack" in message.content) or ("verify" in message.content)):
-            embed = discord.Embed(title="You need a genuine Minecraft account that you've paid money for.", description=f"Software piracy is illegal. You're trusting shady developers with access to the files on your computer - in a world where cyber attacks happen on a daily basis.", color=0xFF0000)
+            embed = discord.Embed(title="You need a genuine Minecraft account that you've paid money for.", description="Software piracy is illegal. You're trusting shady developers with access to the files on your computer - in a world where cyber attacks happen on a daily basis.", color=0xFF0000)
             await message.reply(embed=embed)
         # Whats the IP?
         if (" ip " in message.content or " ip?" in message.content) and (message.author.joined_at > datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=15)):
@@ -156,7 +156,7 @@ async def forms(ctx,
         if type == "Staff Application" and action == "Accept":
             await user.send(f"Hey! Your application has been accepted. You will hear from us shortly.\n\nIn the meantime, you can take a look at this: <https://1literzinalco.github.io/vampirism/staff.html>\n\nWe're using \"Trello\" to organize everything important, such as bugs and punishments. Check out this brief overview: <https://youtu.be/AphRCn5__38> and then join our board: ||<{config.TRELLO}>|| (keep this link secret!)")
         elif type == "Staff Application" and action == "Reject":
-            await user.send(f"Hey! Your application has been rejected. You can reapply in two weeks at the earliest!")
+            await user.send("Hey! Your application has been rejected. You can reapply in two weeks at the earliest!")
             if reason:
                 await user.send(f">>> {reason}")
 
@@ -352,7 +352,7 @@ async def update_mails():
                     embed.add_field(name="How many hours could you approximately contribute per week?", value=content[10], inline=False)
                     embed.set_footer(text=f"{word_count} words")
 
-                    msg = await channel.send(content=f"**STAFF APPLICATION** <@&844592732001009686>", embed=embed)
+                    msg = await channel.send(content="**STAFF APPLICATION** <@&844592732001009686>", embed=embed)
                     await msg.add_reaction("<:vote_yes:601899059417972737>")
                     await msg.add_reaction("<:vote_no:601898704231989259>")
                     thread = await msg.create_thread(name=f"{content[0]}\'s Staff Application")
@@ -400,7 +400,7 @@ async def update_mails():
                     embed.add_field(name="Why have you been banned? Why should you be unbanned?", value="Check the thread 🧵", inline=False)
                     embed.set_footer(text=f"{word_count} words")
 
-                    msg = await channel.send(content=f"**BAN APPEAL** <@&844592732001009686>", embed=embed)
+                    msg = await channel.send(content="**BAN APPEAL** <@&844592732001009686>", embed=embed)
                     await msg.add_reaction("<:vote_yes:601899059417972737>")
                     await msg.add_reaction("<:vote_no:601898704231989259>")
                     thread = await msg.create_thread(name=f"{content[2]}\'s Ban Appeal")
@@ -409,7 +409,7 @@ async def update_mails():
 
             # Unknown
             else:
-                embed = discord.Embed(title="Unknown email", description=f"I've received an email that doesn't match the layout of any form:")
+                embed = discord.Embed(title="Unknown email", description="I've received an email that doesn't match the layout of any form:")
                 embed.add_field(name="Sender", value=mail.from_, inline=True)
                 embed.add_field(name="Subject", value=mail.subject, inline=True)
                 await channel.send(embed=embed)
