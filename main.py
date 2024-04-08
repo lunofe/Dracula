@@ -256,7 +256,7 @@ async def claims(ctx,
                     owner = "Admin" if claim["Owner"] == "" else uuid_to_username(claim["Owner"])
                     await ctx.channel.send(f"({dim}) `{owner}` **♯{id}**")
 
-    await ctx.channel.send(f"{config.EMOJI_NO} Couldn't find any claim for those coordinates." if hit == False else "> *No further results*")
+    await ctx.channel.send(f"{config.EMOJI_NO} Couldn't find any claim for those coordinates." if not hit else "> *No further results*")
 
 # Alts
 @bot.slash_command(guild_ids=servers)
@@ -297,7 +297,7 @@ async def alts(ctx,
                     hit = True
                     await ctx.channel.send(content)
 
-    await ctx.channel.send(f"{config.EMOJI_NO} Couldn't find any alts based on hardware IDs." if hit == False else "> *No further results*")
+    await ctx.channel.send(f"{config.EMOJI_NO} Couldn't find any alts based on hardware IDs." if not hit else "> *No further results*")
 
 #------------------------------------------------------------------------------#
 
@@ -461,7 +461,7 @@ async def snitch_xray():
             if hit:
                 await channel.send(content)
 
-    await channel.send(f"{config.EMOJI_NO} Couldn't find any xrayers." if new == False else "> *No further results*")
+    await channel.send(f"{config.EMOJI_NO} Couldn't find any xrayers." if not new else "> *No further results*")
 
 
 #------------------------------------------------------------------------------#
