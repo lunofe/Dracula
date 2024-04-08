@@ -7,7 +7,6 @@ from ftplib import FTP
 
 import discord
 import pycountry
-import requests
 import yaml
 from discord.ext import tasks
 from imap_tools import MailBox
