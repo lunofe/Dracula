@@ -28,6 +28,7 @@ async def on_ready():
     await bot.change_presence(activity=discord.Game(name="vampirism.co"))
     update_mails_task.start()
     check_roles_task.start()
+    snitch_xray_task.start()
     print("Tasks started, ready!")
 
 # Automatically answer certain messages
@@ -177,7 +178,11 @@ async def ftp_update(ctx, local, remote):
     except:
         pass
 
-    status = await ctx.channel.send(f"{config.EMOJI_LOADING} Updating database...")
+    try:
+        status = await ctx.channel.send(f"{config.EMOJI_LOADING} Updating database...")
+    except:
+        status = await ctx.send(f"{config.EMOJI_LOADING} Updating database...")
+
     ftp = FTP(config.FTP_HOST)
     ftp.login(config.FTP_NAME, config.FTP_PASS)
     ftp.cwd(remote)
@@ -410,6 +415,38 @@ async def check_roles():
                 if role.name in roles:
                     await member.remove_roles(role)
 
+async def snitch_xray():
+    channel = bot.get_channel(831713643090804777)
+    await channel.send(":mag_right: Searching for xrayers...")
+    await ftp_update(channel, "xray", "config/xray_snitch")
+
+    with open(f"{config.BOT_PATH}/xray.log", "r") as file:
+        cache = file.read()
+
+    new = False
+    for filename in os.listdir(f"{config.BOT_PATH}/xray"):
+        
+        if filename.split('.')[0] in config.STAFF_UUIDS:
+            continue
+
+        with open(f"{config.BOT_PATH}/xray/{filename}", "r") as file:
+            lines = file.readlines()
+            content = f"- **__`{uuid_to_username(filename.split('.')[0])}`__**\n"
+            hit = False
+            for line in lines:
+                if f"{filename.split('.')[0]} | {line.strip()}" in cache:
+                    continue
+                content += f"  - `{line.strip()}`\n"
+                with open(f"{config.BOT_PATH}/xray.log", "a") as file:
+                    file.write(f"{filename.split('.')[0]} | {line.strip()}\n")
+                new, hit = True, True
+
+            if hit:
+                await channel.send(content)
+
+    await channel.send(f"{config.EMOJI_NO} Couldn't find any xrayers." if new == False else "> *No further results*")
+
+
 #------------------------------------------------------------------------------#
 
 # Update mails
@@ -421,6 +458,11 @@ async def update_mails_task():
 @tasks.loop(hours=24)
 async def check_roles_task():
     await check_roles()
+
+# Snitch xray
+@tasks.loop(hours=24)
+async def snitch_xray_task():
+    await snitch_xray()
 
 #------------------------------------------------------------------------------#
 
