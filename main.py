@@ -412,10 +412,8 @@ async def update_mails():
                 embed.add_field(name="Sender", value=mail.from_, inline=True)
                 embed.add_field(name="Subject", value=mail.subject, inline=True)
                 await channel.send(embed=embed)
-                return
 
-            # Delete the email and log out
-            mailbox.delete(mail.uid)
+            mailbox.move(mail.uid, "Papierkorb")
 
 async def check_roles():
     channel = bot.get_channel(831713643090804777)
