@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import datetime
 import json
 import os
@@ -7,7 +5,6 @@ import hashlib
 from ftplib import FTP
 
 import discord
-import pycountry
 import yaml
 from discord.ext import tasks
 
@@ -254,7 +251,7 @@ async def alts(ctx,
     if "Staff" not in str(ctx.author.roles):
         await ctx.respond(":warning: Insufficient permission.", ephemeral=True)
         return
-    
+
     await ctx.respond(f":mag_right: Searching alts for `{search}`...")
     hit = False
 
@@ -275,7 +272,7 @@ async def alts(ctx,
                     uuid = line.strip()
                     name = uuid_to_username(uuid)
                     content += f"  - `{uuid}` `{name}`\n"
-                
+
                 if any(uuid in content for uuid in config.STAFF_UUIDS):
                     continue
 
@@ -311,7 +308,7 @@ async def snitch_xray():
 
     new = False
     for filename in os.listdir(f"{config.BOT_PATH}/xray"):
-        
+
         if filename.split('.')[0] in config.STAFF_UUIDS:
             continue
 
