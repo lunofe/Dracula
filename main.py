@@ -21,13 +21,7 @@ servers = [
     692526341987369021 # Dev
 ]
 
-# Presence
-@bot.event
-async def on_ready():
-    await bot.change_presence(activity=discord.Game(name="vampirism.co"))
-    check_roles_task.start()
-    snitch_xray_task.start()
-    print("Tasks started, ready!")
+#------------------------------------------------------------------------------#
 
 # Automatically answer certain messages
 @bot.event
@@ -377,13 +371,17 @@ async def new_alts():
 
 # Daily tasks
 @tasks.loop(hours=24)
-async def check_roles_task():
+async def daily_task():
     await check_roles()
-
-# Snitch xray
-@tasks.loop(hours=24)
-async def snitch_xray_task():
     await snitch_xray()
+    await new_alts()
+
+# Presence
+@bot.event
+async def on_ready():
+    print("Ready!")
+    await bot.change_presence(activity=discord.Game(name="vampirism.co"))
+    daily_task.start()
 
 #------------------------------------------------------------------------------#
 
