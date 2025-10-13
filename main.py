@@ -9,7 +9,6 @@ import discord
 import pycountry
 import yaml
 from discord.ext import tasks
-from imap_tools import MailBox
 
 import config
 
@@ -25,7 +24,6 @@ servers = [
 @bot.event
 async def on_ready():
     await bot.change_presence(activity=discord.Game(name="vampirism.co"))
-    update_mails_task.start()
     check_roles_task.start()
     snitch_xray_task.start()
     print("Tasks started, ready!")
@@ -288,121 +286,6 @@ async def alts(ctx,
 
 #------------------------------------------------------------------------------#
 
-# Get new emails via imap and send the content to the staff channel
-async def update_mails():
-    channel = bot.get_channel(564783779474833431)
-    
-    # Connect to imap
-    with MailBox(config.IMAP_HOST).login(config.IMAP_NAME, config.IMAP_PASS, "INBOX") as mailbox:
-
-        # Cycle through inbox
-        for mail in mailbox.fetch():
-
-            # Try to split the email into the form's parts
-            try:
-                content = mail.text.split("§§")
-            except:
-                pass
-
-            # Switch submission types
-
-            # Staff application
-            if len(content) == 11:
-                word_count = len(content[7].split()) + len(content[8].split()) + len(content[9].split())
-
-                embed=discord.Embed(title=content[0], description=f"{content[1]} years old, {content[2]}\n:flag_{content[3].lower()}: {pycountry.countries.get(alpha_2=content[3]).name}")
-                embed.add_field(name="Minecraft Username", value=f"`{content[4]}`", inline=True)
-                embed.add_field(name="Discord#Tag", value=f"`{content[5]}`", inline=True)
-                embed.add_field(name="Email", value=f"`{content[6]}`", inline=True)
-                embed.add_field(name="Do you have experience as staff?", value=content[7], inline=False)
-                embed.add_field(name="Why do you want to be staff?", value=content[8], inline=False)
-                embed.add_field(name="Why should you be chosen instead of someone else?", value=content[9], inline=False)
-                embed.add_field(name="How many hours could you approximately contribute per week?", value=content[10], inline=False)
-                embed.set_footer(text=f"{word_count} words")
-
-                try:
-                    if word_count > 50:
-                        msg = await channel.send(content="**STAFF APPLICATION** <@&844592732001009686>", embed=embed)
-                    else:
-                        msg = await channel.send(content="**STAFF APPLICATION**", embed=embed)
-
-                    await msg.add_reaction("<:vote_yes:601899059417972737>")
-                    await msg.add_reaction("<:vote_no:601898704231989259>")
-                    await msg.create_thread(name=f"{content[0]}\'s Staff Application")
-
-                except:
-                    embed=discord.Embed(title=content[0], description=f"{content[1]} years old, {content[2]}\n:flag_{content[3].lower()}: {pycountry.countries.get(alpha_2=content[3]).name}")
-                    embed.add_field(name="Minecraft Username", value=f"`{content[4]}`", inline=True)
-                    embed.add_field(name="Discord#Tag", value=f"`{content[5]}`", inline=True)
-                    embed.add_field(name="Email", value=f"`{content[6]}`", inline=True)
-                    embed.add_field(name="Do you have experience as staff? Why do you want to be staff? Why should you be chosen instead of someone else?", value="Check the thread 🧵", inline=False)
-                    embed.add_field(name="How many hours could you approximately contribute per week?", value=content[10], inline=False)
-                    embed.set_footer(text=f"{word_count} words")
-
-                    msg = await channel.send(content="**STAFF APPLICATION** <@&844592732001009686>", embed=embed)
-                    await msg.add_reaction("<:vote_yes:601899059417972737>")
-                    await msg.add_reaction("<:vote_no:601898704231989259>")
-                    thread = await msg.create_thread(name=f"{content[0]}\'s Staff Application")
-                    await thread.send(f"**Do you have experience as staff?**\n>>> {content[7]}")
-                    await thread.send(f"**Why do you want to be staff?**\n>>> {content[8]}")
-                    await thread.send(f"**Why should you be chosen instead of someone else?**\n>>> {content[9]}")                
-
-            # Ban appeal
-            elif len(content) == 7:
-                word_count = len(content[5].split()) + len(content[6].split())
-
-                if content[0] == "mc":
-                    embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft\nType: {content[1]}")
-                elif content[0] == "dc":
-                    embed=discord.Embed(title="Ban Appeal", description=f"Bans: Discord\nType: {content[1]}")
-                else:
-                    embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft & Discord\nType: {content[1]}")
-                embed.add_field(name="Minecraft Username", value=f"`{content[2]}`", inline=True)
-                embed.add_field(name="Discord#Tag", value=f"`{content[3]}`", inline=True)
-                embed.add_field(name="Email", value=f"`{content[4]}`", inline=True)
-                embed.add_field(name="Why have you been banned?", value=content[5], inline=False)
-                embed.add_field(name="Why should you be unbanned?", value=content[6], inline=False)
-                embed.set_footer(text=f"{word_count} words")
-
-                try:
-                    if word_count > 50:
-                        msg = await channel.send(content="<@&844592732001009686>", embed=embed)
-                    else:
-                        msg = await channel.send(embed=embed)
-
-                    await msg.add_reaction("<:vote_yes:601899059417972737>")
-                    await msg.add_reaction("<:vote_no:601898704231989259>")
-                    await msg.create_thread(name=f"{content[2]}\'s Ban Appeal")
-
-                except:
-                    if content[0] == "mc":
-                        embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft\nType: {content[1]}")
-                    elif content[0] == "dc":
-                        embed=discord.Embed(title="Ban Appeal", description=f"Bans: Discord\nType: {content[1]}")
-                    else:
-                        embed=discord.Embed(title="Ban Appeal", description=f"Bans: Minecraft & Discord\nType: {content[1]}")
-                    embed.add_field(name="Minecraft Username", value=f"`{content[2]}`", inline=True)
-                    embed.add_field(name="Discord#Tag", value=f"`{content[3]}`", inline=True)
-                    embed.add_field(name="Email", value=f"`{content[4]}`", inline=True)
-                    embed.add_field(name="Why have you been banned? Why should you be unbanned?", value="Check the thread 🧵", inline=False)
-                    embed.set_footer(text=f"{word_count} words")
-
-                    msg = await channel.send(content="**BAN APPEAL** <@&844592732001009686>", embed=embed)
-                    await msg.add_reaction("<:vote_yes:601899059417972737>")
-                    await msg.add_reaction("<:vote_no:601898704231989259>")
-                    thread = await msg.create_thread(name=f"{content[2]}\'s Ban Appeal")
-                    await thread.send(f"**Why have you been banned?**\n>>> {content[5]}")
-                    await thread.send(f"**Why should you be unbanned?**\n>>> {content[6]}")                
-
-            # Unknown
-            else:
-                embed = discord.Embed(title="Unknown email", description="I've received an email that doesn't match the layout of any form:")
-                embed.add_field(name="Sender", value=mail.from_, inline=True)
-                embed.add_field(name="Subject", value=mail.subject, inline=True)
-                await channel.send(embed=embed)
-
-            mailbox.move(mail.uid, "Papierkorb")
-
 async def check_roles():
     channel = bot.get_channel(831713643090804777)
     exclusive = ["Vampire", "Hunter", "Werewolf", "Human"]
@@ -451,12 +334,7 @@ async def snitch_xray():
 
 #------------------------------------------------------------------------------#
 
-# Update mails
-@tasks.loop(hours=1)
-async def update_mails_task():
-    await update_mails()
-
-# Check roles
+# Daily tasks
 @tasks.loop(hours=24)
 async def check_roles_task():
     await check_roles()
