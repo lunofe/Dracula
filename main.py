@@ -3,6 +3,7 @@
 import datetime
 import json
 import os
+import hashlib
 from ftplib import FTP
 
 import discord
@@ -193,6 +194,14 @@ def uuid_to_username(uuid):
     except:
         return uuid
 
+# SHA for caching
+def sha256(file_path):
+    hash = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for byte_block in iter(lambda: f.read(4096), b""):
+            hash.update(byte_block)
+    return hash.hexdigest()
+
 # Claims
 @bot.slash_command(guild_ids=servers)
 async def claims(ctx,
@@ -329,6 +338,40 @@ async def snitch_xray():
 
     await channel.send(f"{config.EMOJI_NO} Couldn't find any xrayers." if not new else "> *No further results*")
 
+async def new_alts():
+    channel = bot.get_channel(831713643090804777)
+    await channel.send(":mag_right: Searching for HWID changes...")
+    await ftp_update(channel, "hwid", "config/hwid")
+
+    with open(f"{config.BOT_PATH}/hwid.log", "r") as file:
+        cache = file.read()
+
+    new = False
+    for filename in os.listdir(f"{config.BOT_PATH}/hwid"):
+
+        hash = sha256(f"{config.BOT_PATH}/hwid/{filename}")
+        if hash in cache:
+            continue
+        else:
+            with open(f"{config.BOT_PATH}/hwid.log", "a") as file:
+                file.write(f"{hash}\n")
+
+        with open(f"{config.BOT_PATH}/hwid/{filename}", "r") as file:
+            lines = file.readlines()
+            if len(lines) > 1:
+                message = f"-# `{filename.split('.')[0]}`\n"
+                for line in lines:
+                    uuid = line.strip()
+                    name = uuid_to_username(uuid)
+                    message += f"- `{uuid}` `{name}`\n"
+
+                if any(uuid in message for uuid in config.STAFF_UUIDS):
+                    continue
+
+                await channel.send(message)
+                new = True
+
+    await channel.send(f"{config.EMOJI_NO} Couldn't find any HWID changes." if not new else "> *No further results*")
 
 #------------------------------------------------------------------------------#
 
