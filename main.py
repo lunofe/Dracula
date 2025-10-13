@@ -241,7 +241,7 @@ async def claims(ctx,
                 if x1 <= x <= x2 and z1 <= z <= z2:
                     hit = True
                     owner = "Admin" if claim["Owner"] == "" else uuid_to_username(claim["Owner"])
-                    await ctx.channel.send(f"({dim}) `{owner}` **♯{id}**")
+                    await ctx.channel.send(f"({dim}) `{owner}` **#{id}**")
 
     await ctx.channel.send(f"{config.EMOJI_NO} Couldn't find any claim for those coordinates." if not hit else "> *No further results*")
 
