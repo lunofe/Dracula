@@ -317,7 +317,7 @@ async def snitch_xray():
 
         with open(f"{config.BOT_PATH}/xray/{filename}", "r") as file:
             lines = file.readlines()
-            content = f"- **__`{uuid_to_username(filename.split('.')[0])}`__**\n"
+            content = f"- **__`{uuid_to_username(filename.split('.')[0])}`__** - `{filename.split('.')[0]}`\n"
             hit = False
             for line in lines:
                 if f"{filename.split('.')[0]} | {line.strip()}" in cache:
