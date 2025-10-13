@@ -1,5 +1,10 @@
 # Custom
 config.py
+claims/
+hwid/
+xray/
+*.log
+usernamecache.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
