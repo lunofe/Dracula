@@ -129,7 +129,7 @@ async def forms(ctx,
 
     try:
         if type == "Staff Application" and action == "Accept":
-            await user.send(f"Hey! Your application has been accepted. You will hear from us shortly.\n\nIn the meantime, you can take a look at this: <https://1literzinalco.github.io/vampirism/staff.html>\n\nWe're using \"Trello\" to organize everything important, such as bugs and punishments. Check out this brief overview: <https://youtu.be/AphRCn5__38> and then join our board: ||<{config.TRELLO}>|| (keep this link secret!)")
+            await user.send(f"Hey! Your application has been accepted. You will hear from us shortly.")
         elif type == "Staff Application" and action == "Reject":
             await user.send("Hey! Your application has been rejected. You can reapply in two weeks at the earliest!")
             if reason:
