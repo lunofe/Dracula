@@ -93,7 +93,7 @@ async def delete(ctx,
 # Embeds
 @bot.slash_command(guild_ids=servers)
 async def embed(ctx,
-    id: discord.Option(str, "Select an embed to send", choices=["welcome", "rules", "support"])
+    id: discord.Option(str, "Select an embed to send", choices=["welcome", "rules"])
 ):
     """Send embeds"""
     if "Staff" not in str(ctx.author.roles):
@@ -101,27 +101,25 @@ async def embed(ctx,
         return
 
     if id == "welcome":
+        await ctx.send(files=[discord.File(open(f"{config.BOT_PATH}/img/banner_bat.png", "rb"))])
+        await ctx.channel.send("# Welcome to Vampirism.co, the modpack and server that will transport you to a supernatural realm filled with dark mysteries and thrilling adventures.\n\nOur modpack features the Vampirism mod, which allows you to become a powerful vampire with unique abilities and weaknesses. You can transform into a bat, and use your improved strength and speed to take over entire kingdoms. But beware, the sun can be your undoing!\n\nIn addition, our server offers the Werewolves add-on, where you can embrace the full moon and transform into a ferocious werewolf. Hunt for prey, howl at the moon, and join forces with your fellow lycanthropes to defend your territory.\n\nOr, do you prefer to fight against the forces of darkness? Arm yourself with crossbows, weapons made of silver, garlic, and stakes to take down the vampires and werewolves that roam the land with the fellow hunters of your guild.\n\nBut wait, there’s more! We have carefully curated an assortment of other fantastic mods, carefully selected to enhance your immersion without diverting attention from the heart of the Vampirism experience. These modifications work in harmony to elevate your adventure, ensuring a seamless blend of creativity and exploration.\n\nSo gather your friends, form a coven or pack, and embark on an epic journey through the night. Will you choose the path of the vampire, werewolf, hunter, or maybe a human? The choice is yours, on Vampirism.co\n** **")
         await ctx.send(files=[discord.File(open(f"{config.BOT_PATH}/img/apex_hosting.gif", "rb"))])
-        embed = discord.Embed(title="Welcome to Vampirism.co, the modpack and server that will transport you to a supernatural realm filled with dark mysteries and thrilling adventures.", description="Our modpack features the Vampirism mod, which allows you to become a powerful vampire with unique abilities and weaknesses. You can transform into a bat, and use your improved strength and speed to take over entire kingdoms. But beware, the sun can be your undoing!\n\nIn addition, our server offers the Werewolves add-on, where you can embrace the full moon and transform into a ferocious werewolf. Hunt for prey, howl at the moon, and join forces with your fellow lycanthropes to defend your territory.\n\nOr, do you prefer to fight against the forces of darkness? Arm yourself with crossbows, weapons made of silver, garlic, and stakes to take down the vampires and werewolves that roam the land with the fellow hunters of your guild.\n\nBut wait, there’s more! We have carefully curated an assortment of other fantastic mods, carefully selected to enhance your immersion without diverting attention from the heart of the Vampirism experience. These modifications work in harmony to elevate your adventure, ensuring a seamless blend of creativity and exploration.\n\nSo gather your friends, form a coven or pack, and embark on an epic journey through the night. Will you choose the path of the vampire, werewolf, hunter, or maybe a human? The choice is yours, on Vampirism.co 🌙\n\n**Get one of our modpacks to get started:**\n<:curseforge:904463104505688124> **[CurseForge](https://vampirism.co/install-curseforge)** <:external_link:904418888551391243>\nAlways up-to-date and a good way to play modded Minecraft in general.\n\n<:technic:904463105780752444> **[Technic Launcher](https://vampirism.co/install-technic)** <:external_link:904418888551391243>\nAlways up-to-date and an easy way to play on our server, without much fuss.\n\n<:modrinth:1203478892837478410> **[Modrinth](https://modrinth.com/modpack/vampirism.co)** <:external_link:904418888551391243>\nAn open source modding platform, built to be performant and modern.\n\n<:diy:904463219635130408> **[More launchers & DIY](https://vampirism.co/install-manually)** <:external_link:904418888551391243>\nYou know what you're doing? Then this might be the right choice for you.", color=0x7246F8)
-        await ctx.send(files=[discord.File(open(f"{config.BOT_PATH}/img/banner_bat.png", "rb"))], embeds=embed, content="** **")
+        await ctx.channel.send("## Get one of our modpacks to get started:\n\n<:modrinth:1203478892837478410> **[Modrinth](https://modrinth.com/modpack/vampirism.co)** <:external_link:904418888551391243> — Simple and modern by default, yet powerful when needed; our clear recommendation.\n<:curseforge:904463104505688124> **[CurseForge](https://vampirism.co/install-curseforge)** <:external_link:904418888551391243> — The true classic everyone knows and a good way to play modded Minecraft in general.")
     elif id == "rules":
         embeds = [
-            discord.Embed(title="Treat everyone with respect. Absolutely no harassment, sexism, racism, hate speech, swearing, derogatory language, witch hunting or any other discrimination will be tolerated.", color=0x5865F2),
-            discord.Embed(title="Be civil and use common sense. If you do something that's not explicitly prohibited by the rules, but we think isn't okay nonetheless, we'll still take actions as mentioned further down below.", color=0x5865F2),
-            discord.Embed(title="Keep things family friendly. No NSFW or obscene content. This includes but is not limited to text, images, or links featuring nudity, sex, hard violence, or other graphically disturbing content.", color=0x5865F2),
-            discord.Embed(title="No spam or self-promotion (server invites, advertisements, etc.) without permission from a staff member. This includes DMing fellow members.", color=0x5865F2),
-            discord.Embed(title="Speak English in public chats and avoid excessive use of caps, symbols, emojis, or other elements that clutter the conversation.", color=0x5865F2),
-            discord.Embed(title="If you see something against the rules or something that makes you feel unsafe, message staff immediately. We want this server to be a welcoming and safe space!", color=0xED4245),
-            discord.Embed(title="Breaking any of these rules will result in your message(s) being deleted, a temporary mute, a warning (multiple will lead to bans), a temporary ban or a permanent ban.", color=0xED4245)
+            discord.Embed(title="Treat everyone with respect. Absolutely no harassment, sexism, racism, hate speech, swearing, derogatory language, witch hunting or any other discrimination will be tolerated.", color=0x7246F8),
+            discord.Embed(title="Be civil and use common sense. If you do something that’s not explicitly prohibited by the rules, but isn’t okay nonetheless, we’ll still take actions.", color=0x7246F8),
+            discord.Embed(title="Keep things family friendly. No NSFW or obscene content. This includes but is not limited to nudity, sex, hard violence, or other graphically disturbing content.", color=0x7246F8),
+            discord.Embed(title="No spam or self-promotion (server invites, advertisements, etc.) without permission from a staff member. This includes directly messaging other members.", color=0x7246F8),
+            discord.Embed(title="Speak English in public chats and avoid excessive use of caps, symbols, emojis, or other elements that clutter the conversation.", color=0x7246F8),
+            discord.Embed(title="If you see someone breaking the rules or something that makes you feel unsafe, message staff immediately. We want this server to be a welcoming and safe space and will resolve the situation as fast as possible.", color=0xBB1234),
+            discord.Embed(title="Breaking any of these rules will result in your messages being deleted, a temporary mute, a warning, a temporary ban or a permanent ban.", color=0xBB1234)
         ]
         # Todo: This might work in one line.
         view=discord.ui.View()
-        view.add_item(discord.ui.Button(emoji="<:minecraft:904427541656371240>", label="See also: Rules for the Minecraft server", url="https://vampirism.co/rules"))
-        await ctx.channel.send(view=view, file=discord.File(open(f"{config.BOT_PATH}/img/rules.png", "rb")), embeds=embeds)
-    elif id == "support":
-        embed = discord.Embed(title="Welcome to our support channel.", description="If you have connections issues, take a look at this first:")
-        embed.set_image(url="https://files.vampirism.co/support.png")
-        await ctx.channel.send(file=discord.File(open(f"{config.BOT_PATH}/img/support.png", "rb")), embed=embed)
+        view.add_item(discord.ui.Button(emoji="<:minecraft:904427541656371240>", label="ʟᴇᴀʀɴ ᴍᴏʀᴇ: Rules for the Minecraft server", url="https://vampirism.co/wiki/rules/"))
+        await ctx.channel.send(view=view, embeds=embeds)
+
     await ctx.respond(content=":white_check_mark:", ephemeral=True)
 
 # Forms
