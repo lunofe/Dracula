@@ -2,7 +2,7 @@ import datetime
 import json
 import os
 import hashlib
-from ftplib import FTP
+import paramiko
 
 import discord
 import yaml
@@ -164,15 +164,25 @@ async def ftp_update(ctx, local, remote):
     except:
         status = await ctx.send(f"{config.EMOJI_LOADING} Updating database...")
 
-    ftp = FTP(config.FTP_HOST)
-    ftp.login(config.FTP_NAME, config.FTP_PASS)
+    client = paramiko.SSHClient()
+    client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    client.connect(
+        config.PTERO_HOST.split(":")[0],
+        int(config.PTERO_HOST.split(":")[1]) if ":" in config.PTERO_HOST else 22,
+        username=config.PTERO_USER,
+        key_filename=config.PTERO_KEY,
+        passphrase=getattr(config, "PTERO_KEY_PASSPHRASE", None),
+        allow_agent=True,
+        look_for_keys=True
+    )
+    sftp = client.open_sftp()
 
-    ftp.retrbinary("RETR usernamecache.json", open("usernamecache.json", "wb").write)
-    ftp.cwd(remote)
-    files = ftp.nlst()
+    sftp.get("usernamecache.json", "usernamecache.json")
+
+    files = sftp.listdir(remote)
 
     for i, file in enumerate(files):
-        ftp.retrbinary(f"RETR {file}", open(f"{local}/{file}", "wb").write)
+        sftp.get(f"{remote}/{file}", f"{local}/{file}")
         if i % 25 == 0:
             try: # Discord timeout might stop loop execution
                 await status.edit(f"{config.EMOJI_LOADING} [{int(i/len(files)*100)}%] Downloaded file {i} of {len(files)}...")
@@ -180,7 +190,8 @@ async def ftp_update(ctx, local, remote):
                 pass
 
     await status.edit(f"{config.EMOJI_OK} Successfully downloaded {len(files)} files.")
-    ftp.close()
+    sftp.close()
+    client.close()
 
 # Username cache
 def uuid_to_username(uuid):
