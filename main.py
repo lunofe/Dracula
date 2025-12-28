@@ -20,24 +20,30 @@ servers = [
 
 #------------------------------------------------------------------------------#
 
-# Automatically answer certain messages
+# Message handler
 @bot.event
 async def on_message(message):
-    try:
-        # Custom welcome message for support tickets
-        if message.author.id == 557628352828014614 and "Support will be with you shortly." in message.embeds[0].description:
-            await message.edit(suppress=True)
-            embed=discord.Embed(title="Welcome to your support ticket.", description="Please describe your problem or question and include your Minecraft username or any details that might be relevant, so our staff members can help you as quickly as possbible with the minimum amount of additional questions.", color=0x5865F2)
-            await message.channel.send(embed=embed)
-        # Auto-respond to messages regarding cracked Minecraft accounts
-        if (message.author.joined_at > datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=60)) and (("tlauncher" in message.content) or ("premium" in message.content) or ("crack" in message.content) or ("verify" in message.content)):
-            embed = discord.Embed(title="You need a genuine Minecraft account that you've paid money for.", description="Software piracy is illegal. You're trusting shady developers with access to the files on your computer - in a world where cyber attacks happen on a daily basis.", color=0xFF0000)
-            await message.reply(embed=embed)
-        # Whats the IP?
-        if (" ip " in message.content or " ip?" in message.content) and (message.author.joined_at > datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=60)):
-            await message.reply("Our IP is `vampirism.co`.\nLearn more in <#593208607642877973>")
-    except:
-        pass
+
+    # Custom welcome message for support tickets
+    if message.author.id == 557628352828014614 and "Support will be with you shortly." in message.embeds[0].description:
+        await message.edit(suppress=True)
+        embed=discord.Embed(title="Welcome to your support ticket.", description="Please describe your problem or question and include your Minecraft username or any details that might be relevant, so our staff members can help you as quickly as possbible with the minimum amount of additional questions.", color=0x5865F2)
+        await message.channel.send(embed=embed)
+
+    # Form submissions
+    if message.author.id == 1407060394253746317:
+        await message.add_reaction("✅")
+        await message.add_reaction("❌")
+        await message.create_thread(name=f"Vote: {message.embeds[0].title}", auto_archive_duration=10080)
+
+    # Auto-respond to messages regarding cracked Minecraft accounts
+    if (message.author.joined_at > datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=60)) and (("tlauncher" in message.content) or ("premium" in message.content) or ("crack" in message.content) or ("verify" in message.content)):
+        embed = discord.Embed(title="You need a genuine Minecraft account that you've paid money for.", description="Software piracy is illegal. You're trusting shady developers with access to the files on your computer - in a world where cyber attacks happen on a daily basis.", color=0xFF0000)
+        await message.reply(embed=embed)
+
+    # Whats the IP?
+    if (" ip " in message.content or " ip?" in message.content) and (message.author.joined_at > datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(minutes=60)):
+        await message.reply("Our IP is `vampirism.co`.\nLearn more in <#593208607642877973>")
 
 #------------------------------------------------------------------------------#
 
