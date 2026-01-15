@@ -1,4 +1,5 @@
 # Custom
+.ssh/
 config.py
 claims/
 hwid/
