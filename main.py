@@ -375,7 +375,7 @@ async def new_alts():
 #------------------------------------------------------------------------------#
 
 # Daily tasks
-@tasks.loop(hours=24)
+@tasks.loop(time=datetime.time(hour=18, minute=0))
 async def daily_task():
     await check_roles()
     await snitch_xray()
