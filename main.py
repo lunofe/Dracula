@@ -37,6 +37,21 @@ async def on_message(message):
         await message.add_reaction("❌")
         await message.create_thread(name=f"Vote: {message.embeds[0].title}", auto_archive_duration=10080)
 
+    # Emoji filter
+    if not message.author.bot and is_blocked_emoji(message.content):
+        await message.delete()
+        return
+
+# Reaction filter
+@bot.event
+async def on_raw_reaction_add(payload):
+    if payload.member and payload.member.bot:
+        return
+    if is_blocked_emoji(str(payload.emoji)):
+        channel = bot.get_channel(payload.channel_id)
+        message = await channel.fetch_message(payload.message_id)
+        await message.remove_reaction(payload.emoji, payload.member)
+
 #------------------------------------------------------------------------------#
 
 # Ticket close
@@ -184,6 +199,10 @@ async def ftp_update(ctx, local, remote):
     await status.edit(f"{config.EMOJI_OK} Successfully downloaded {len(files)} files.")
     sftp.close()
     client.close()
+
+# Blocked emoji check
+def is_blocked_emoji(text):
+    return any(e in text for e in config.BLOCKED_EMOJIS)
 
 # Username cache
 def uuid_to_username(uuid):
