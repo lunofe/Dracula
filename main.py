@@ -12,7 +12,10 @@ import config
 
 # Init
 os.chdir(os.path.dirname(os.path.abspath(__file__))) # Set working directory to script location
-bot = discord.Bot(intents=discord.Intents.all())
+intents = discord.Intents()
+intents.message_content = True
+intents.members = True
+bot = discord.Bot(intents=intents)
 servers = [
     528346798138589215, # Vampirism.co
     430326060635258881, # Vampirism Mod
@@ -306,8 +309,25 @@ async def alts(ctx,
 
 #------------------------------------------------------------------------------#
 
+async def get_internal_channel():
+    channel = bot.get_channel(config.INTERNAL_CHANNEL_ID)
+    if channel is None:
+        try:
+            channel = await bot.fetch_channel(config.INTERNAL_CHANNEL_ID)
+        except discord.HTTPException as error:
+            print(f"Unable to fetch internal channel {config.INTERNAL_CHANNEL_ID}: {error}")
+            return None
+
+    if not isinstance(channel, discord.TextChannel):
+        print(f"Internal channel {config.INTERNAL_CHANNEL_ID} is not a text channel.")
+        return None
+
+    return channel
+
 async def check_roles():
-    channel = bot.get_channel(831713643090804777)
+    channel = await get_internal_channel()
+    if channel is None:
+        return
     exclusive = ["Vampire", "Hunter", "Werewolf", "Human"]
     for member in channel.guild.members:
         roles = []
@@ -321,7 +341,9 @@ async def check_roles():
                     await member.remove_roles(role)
 
 async def snitch_xray():
-    channel = bot.get_channel(831713643090804777)
+    channel = await get_internal_channel()
+    if channel is None:
+        return
     await channel.send(":mag_right: Searching for xrayers...")
     await ftp_update(channel, "xray", "config/xray_snitch")
 
@@ -352,7 +374,9 @@ async def snitch_xray():
     await channel.send(f"{config.EMOJI_NO} Couldn't find any xrayers." if not new else "> *No further results*")
 
 async def new_alts():
-    channel = bot.get_channel(831713643090804777)
+    channel = await get_internal_channel()
+    if channel is None:
+        return
     await channel.send(":mag_right: Searching for HWID changes...")
     await ftp_update(channel, "hwid", "config/hwid")
 
@@ -400,7 +424,8 @@ async def daily_task():
 async def on_ready():
     print("Ready!")
     await bot.change_presence(activity=discord.Game(name="vampirism.co"))
-    daily_task.start()
+    if not daily_task.is_running():
+        daily_task.start()
 
 #------------------------------------------------------------------------------#
 
